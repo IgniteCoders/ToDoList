@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var taskDAO: TaskDAO
 
-    var taskList: List<Task> = emptyList()
+    var taskList: MutableList<Task> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,12 +41,16 @@ class MainActivity : AppCompatActivity() {
         taskDAO.insert(Task(-1, "Pagar el alquiler"))
         taskDAO.insert(Task(-1, "Pasear al perro"))*/
 
-        adapter = TaskAdapter(taskList) {
+        adapter = TaskAdapter(taskList, {
             val task = taskList[it]
-            task.done = !task.done
-            taskDAO.update(task)
-            adapter.updateItems(taskList)
-        }
+            showTask(task)
+        }, {
+            val task = taskList[it]
+            checkTask(task)
+        }, {
+            val task = taskList[it]
+            deleteTask(task)
+        })
 
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
@@ -60,8 +64,26 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        taskList = taskDAO.findAll()
+        taskList = taskDAO.findAll().toMutableList()
 
         adapter.updateItems(taskList)
+    }
+
+    fun checkTask(task: Task) {
+        task.done = !task.done
+        taskDAO.update(task)
+        adapter.updateItems(taskList)
+    }
+
+    fun deleteTask(task: Task) {
+        taskDAO.delete(task)
+        taskList.remove(task)
+        adapter.updateItems(taskList)
+    }
+
+    fun showTask(task: Task) {
+        val intent = Intent(this, TaskActivity::class.java)
+        intent.putExtra(TaskActivity.EXTRA_TASK_ID, task.id)
+        startActivity(intent)
     }
 }
