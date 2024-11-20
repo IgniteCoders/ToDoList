@@ -1,19 +1,15 @@
 package com.example.todolist.activities
 
-import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.todolist.R
-import com.example.todolist.TaskAdapter
-import com.example.todolist.data.Task
+import com.example.todolist.adapters.TaskAdapter
+import com.example.todolist.data.entities.Task
 import com.example.todolist.data.providers.TaskDAO
 import com.example.todolist.databinding.ActivityMainBinding
-import com.example.todolist.utils.DatabaseManager
 
 class MainActivity : AppCompatActivity() {
 

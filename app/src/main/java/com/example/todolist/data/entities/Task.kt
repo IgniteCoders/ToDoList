@@ -1,4 +1,4 @@
-package com.example.todolist.data
+package com.example.todolist.data.entities
 
 data class Task(
     val id: Long,

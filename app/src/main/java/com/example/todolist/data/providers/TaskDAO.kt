@@ -4,7 +4,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
-import com.example.todolist.data.Task
+import com.example.todolist.data.entities.Task
 import com.example.todolist.utils.DatabaseManager
 
 class TaskDAO(val context: Context) {

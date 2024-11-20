@@ -1,9 +1,9 @@
-package com.example.todolist
+package com.example.todolist.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.todolist.data.Task
+import com.example.todolist.data.entities.Task
 import com.example.todolist.databinding.ItemTaskBinding
 
 class TaskAdapter(var items: List<Task>, val onItemClick: (Int) -> Unit) : RecyclerView.Adapter<ViewHolder>() {
