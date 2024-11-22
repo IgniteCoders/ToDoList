@@ -2,6 +2,7 @@ package com.example.todolist.data.providers
 
 import android.content.ContentValues
 import android.content.Context
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
 import com.example.todolist.data.entities.Task
@@ -19,14 +20,36 @@ class TaskDAO(val context: Context) {
         db.close()
     }
 
+    fun getContentValues(task: Task): ContentValues {
+        return ContentValues().apply {
+            put(Task.COLUMN_NAME_TITLE, task.title)
+            put(Task.COLUMN_NAME_DESCRIPTION, task.description)
+            put(Task.COLUMN_NAME_REMINDER, task.reminder)
+            put(Task.COLUMN_NAME_ALL_DAY, task.allDay)
+            put(Task.COLUMN_NAME_DATE, task.date)
+            put(Task.COLUMN_NAME_TIME, task.time)
+            put(Task.COLUMN_NAME_DONE, task.done)
+        }
+    }
+
+    fun cursorToEntity(cursor: Cursor): Task {
+        val id = cursor.getLong(cursor.getColumnIndexOrThrow(Task.COLUMN_ID))
+        val name = cursor.getString(cursor.getColumnIndexOrThrow(Task.COLUMN_NAME_TITLE))
+        val description = cursor.getString(cursor.getColumnIndexOrThrow(Task.COLUMN_NAME_DESCRIPTION))
+        val reminder = cursor.getInt(cursor.getColumnIndexOrThrow(Task.COLUMN_NAME_REMINDER)) != 0
+        val allDay = cursor.getInt(cursor.getColumnIndexOrThrow(Task.COLUMN_NAME_ALL_DAY)) != 0
+        val date = cursor.getLong(cursor.getColumnIndexOrThrow(Task.COLUMN_NAME_DATE))
+        val time = cursor.getLong(cursor.getColumnIndexOrThrow(Task.COLUMN_NAME_TIME))
+        val done = cursor.getInt(cursor.getColumnIndexOrThrow(Task.COLUMN_NAME_DONE)) != 0
+
+        return Task(id, name, description, reminder, allDay, date, time, done)
+    }
+
     fun insert(task: Task) {
         open()
 
         // Create a new map of values, where column names are the keys
-        val values = ContentValues().apply {
-            put(Task.COLUMN_NAME, task.name)
-            put(Task.COLUMN_DONE, task.done)
-        }
+        val values = getContentValues(task)
 
         try {
             // Insert the new row, returning the primary key value of the new row
@@ -42,10 +65,7 @@ class TaskDAO(val context: Context) {
         open()
 
         // Create a new map of values, where column names are the keys
-        val values = ContentValues().apply {
-            put(Task.COLUMN_NAME, task.name)
-            put(Task.COLUMN_DONE, task.done)
-        }
+        val values = getContentValues(task)
 
         try {
             // Update the existing rows, returning the number of affected rows
@@ -73,14 +93,10 @@ class TaskDAO(val context: Context) {
     fun findById(id: Long) : Task? {
         open()
 
-        // Define a projection that specifies which columns from the database
-        // you will actually use after this query.
-        val projection = arrayOf(Task.COLUMN_ID, Task.COLUMN_NAME, Task.COLUMN_DONE)
-
         try {
             val cursor = db.query(
                 Task.TABLE_NAME,                    // The table to query
-                projection,                         // The array of columns to return (pass null to get all)
+                Task.COLUMN_NAMES,                  // The array of columns to return (pass null to get all)
                 "${Task.COLUMN_ID} = $id",  // The columns for the WHERE clause
                 null,                   // The values for the WHERE clause
                 null,                       // don't group the rows
@@ -89,11 +105,7 @@ class TaskDAO(val context: Context) {
             )
 
             if (cursor.moveToNext()) {
-                val id = cursor.getLong(cursor.getColumnIndexOrThrow(Task.COLUMN_ID))
-                val name = cursor.getString(cursor.getColumnIndexOrThrow(Task.COLUMN_NAME))
-                val done = cursor.getInt(cursor.getColumnIndexOrThrow(Task.COLUMN_DONE)) != 0
-
-                return Task(id, name, done)
+                return cursorToEntity(cursor)
             }
         } catch (e: Exception) {
             Log.e("DB", e.stackTraceToString())
@@ -108,14 +120,10 @@ class TaskDAO(val context: Context) {
 
         var list: MutableList<Task> = mutableListOf()
 
-        // Define a projection that specifies which columns from the database
-        // you will actually use after this query.
-        val projection = arrayOf(Task.COLUMN_ID, Task.COLUMN_NAME, Task.COLUMN_DONE)
-
         try {
             val cursor = db.query(
                 Task.TABLE_NAME,                    // The table to query
-                projection,                         // The array of columns to return (pass null to get all)
+                Task.COLUMN_NAMES,                  // The array of columns to return (pass null to get all)
                 null,                       // The columns for the WHERE clause
                 null,                   // The values for the WHERE clause
                 null,                       // don't group the rows
@@ -124,11 +132,7 @@ class TaskDAO(val context: Context) {
             )
 
             while (cursor.moveToNext()) {
-                val id = cursor.getLong(cursor.getColumnIndexOrThrow(Task.COLUMN_ID))
-                val name = cursor.getString(cursor.getColumnIndexOrThrow(Task.COLUMN_NAME))
-                val done = cursor.getInt(cursor.getColumnIndexOrThrow(Task.COLUMN_DONE)) != 0
-
-                val task = Task(id, name, done)
+                val task = cursorToEntity(cursor)
                 list.add(task)
             }
         } catch (e: Exception) {
