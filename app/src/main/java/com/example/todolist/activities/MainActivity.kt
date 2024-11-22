@@ -14,6 +14,11 @@ import com.example.todolist.adapters.TaskAdapter
 import com.example.todolist.data.entities.Task
 import com.example.todolist.data.providers.TaskDAO
 import com.example.todolist.databinding.ActivityMainBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 
 class MainActivity : AppCompatActivity() {
@@ -64,6 +69,9 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, TaskActivity::class.java)
             startActivity(intent)
         }
+
+        val dateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault())
+        binding.dateTextView.text = dateFormat.format(Calendar.getInstance().time)
     }
 
     override fun onResume() {
@@ -84,7 +92,7 @@ class MainActivity : AppCompatActivity() {
     // Funciona para mostrar un dialogo para borrar la tarea
     fun deleteTask(task: Task) {
         // Mostramos un dialogo para asegurarnos de que el usuario quiere borrar la tarea
-        AlertDialog.Builder(this)
+        MaterialAlertDialogBuilder(this)
             .setTitle("Borrar tarea")
             .setMessage("Estas seguro de que quieres borrar la tarea?")
             .setPositiveButton(android.R.string.ok) { dialog, which ->

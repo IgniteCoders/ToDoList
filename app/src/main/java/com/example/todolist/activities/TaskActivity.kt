@@ -12,6 +12,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.todolist.data.entities.Task
 import com.example.todolist.data.providers.TaskDAO
 import com.example.todolist.databinding.ActivityTaskBinding
+import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -61,6 +62,8 @@ class TaskActivity : AppCompatActivity() {
     }
 
     private fun loadViews() {
+        //binding.titleTextField.requestFocus()
+
         binding.closeButton.setOnClickListener { finish() }
 
         binding.reminderSwitch.setOnCheckedChangeListener { _, isChecked ->
@@ -122,15 +125,13 @@ class TaskActivity : AppCompatActivity() {
     }
 
     private fun setDate(calendar: Calendar) {
-        val mFormat = "dd/MM/yyyy"
-        val sdf = SimpleDateFormat(mFormat, Locale.ROOT)
-        binding.dateTextField.editText?.setText(sdf.format(calendar.time))
+        val dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault())
+        binding.dateTextField.editText?.setText(dateFormat.format(calendar.time))
     }
 
     private fun setTime(calendar: Calendar) {
-        val mFormat = "HH:mm"
-        val sdf = SimpleDateFormat(mFormat, Locale.ROOT)
-        binding.timeTextField.editText?.setText(sdf.format(calendar.time))
+        val timeFormat = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.getDefault())
+        binding.timeTextField.editText?.setText(timeFormat.format(calendar.time))
     }
 
     private fun datePickerDialog() {
