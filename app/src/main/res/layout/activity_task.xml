@@ -101,7 +101,7 @@
 
         <!-- Priority -->
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/categoryTextField"
+            android:id="@+id/priorityTextField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Prioridad"
@@ -110,6 +110,7 @@
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
 
             <AutoCompleteTextView
+                android:id="@+id/priorityAutoCompleteTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"

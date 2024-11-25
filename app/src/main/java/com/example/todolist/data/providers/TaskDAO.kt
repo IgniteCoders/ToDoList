@@ -28,6 +28,7 @@ class TaskDAO(val context: Context) {
             put(Task.COLUMN_NAME_ALL_DAY, task.allDay)
             put(Task.COLUMN_NAME_DATE, task.date)
             put(Task.COLUMN_NAME_TIME, task.time)
+            put(Task.COLUMN_NAME_PRIORITY, task.priority)
             put(Task.COLUMN_NAME_DONE, task.done)
         }
     }
@@ -40,9 +41,10 @@ class TaskDAO(val context: Context) {
         val allDay = cursor.getInt(cursor.getColumnIndexOrThrow(Task.COLUMN_NAME_ALL_DAY)) != 0
         val date = cursor.getLong(cursor.getColumnIndexOrThrow(Task.COLUMN_NAME_DATE))
         val time = cursor.getLong(cursor.getColumnIndexOrThrow(Task.COLUMN_NAME_TIME))
+        val priority = cursor.getInt(cursor.getColumnIndexOrThrow(Task.COLUMN_NAME_PRIORITY))
         val done = cursor.getInt(cursor.getColumnIndexOrThrow(Task.COLUMN_NAME_DONE)) != 0
 
-        return Task(id, name, description, reminder, allDay, date, time, done)
+        return Task(id, name, description, reminder, allDay, date, time, priority, done)
     }
 
     fun insert(task: Task) {

@@ -12,6 +12,8 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.todolist.data.entities.Task
 import com.example.todolist.data.providers.TaskDAO
 import com.example.todolist.databinding.ActivityTaskBinding
+import com.example.todolist.utils.getFormattedDate
+import com.example.todolist.utils.getFormattedTime
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -97,9 +99,7 @@ class TaskActivity : AppCompatActivity() {
         }
 
         binding.saveButton.setOnClickListener {
-            if (validateTask()) {
-                saveTask()
-            }
+            saveTask()
         }
     }
 
@@ -125,13 +125,11 @@ class TaskActivity : AppCompatActivity() {
     }
 
     private fun setDate(calendar: Calendar) {
-        val dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault())
-        binding.dateTextField.editText?.setText(dateFormat.format(calendar.time))
+        binding.dateTextField.editText?.setText(calendar.getFormattedDate())
     }
 
     private fun setTime(calendar: Calendar) {
-        val timeFormat = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.getDefault())
-        binding.timeTextField.editText?.setText(timeFormat.format(calendar.time))
+        binding.timeTextField.editText?.setText(calendar.getFormattedTime())
     }
 
     private fun datePickerDialog() {
@@ -202,6 +200,7 @@ class TaskActivity : AppCompatActivity() {
         task.description = binding.descriptionTextField.editText?.text.toString()
         task.reminder = binding.reminderSwitch.isChecked
         task.allDay = task.reminder && binding.allDaySwitch.isChecked
+        //task.priority = binding.priorityAutoCompleteTextView.listSelection
         task.setCalendar(calendar)
 
         if (validateTask()) {

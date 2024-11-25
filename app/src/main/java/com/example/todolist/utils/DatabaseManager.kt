@@ -9,7 +9,7 @@ class DatabaseManager(context: Context) : SQLiteOpenHelper(context, DATABASE_NAM
 
     companion object {
         // If you change the database schema, you must increment the database version.
-        const val DATABASE_VERSION = 1
+        const val DATABASE_VERSION = 2
         const val DATABASE_NAME = "ToDoListDatabase.db"
 
 
@@ -20,8 +20,9 @@ class DatabaseManager(context: Context) : SQLiteOpenHelper(context, DATABASE_NAM
                     "${Task.COLUMN_NAME_DESCRIPTION} TEXT," +
                     "${Task.COLUMN_NAME_REMINDER} BOOLEAN," +
                     "${Task.COLUMN_NAME_ALL_DAY} BOOLEAN," +
-                    "${Task.COLUMN_NAME_DATE} TEXT," +
-                    "${Task.COLUMN_NAME_TIME} TEXT," +
+                    "${Task.COLUMN_NAME_DATE} INTEGER," +
+                    "${Task.COLUMN_NAME_TIME} INTEGER," +
+                    "${Task.COLUMN_NAME_PRIORITY} INTEGER," +
                     "${Task.COLUMN_NAME_DONE} BOOLEAN)"
 
         private const val SQL_DELETE_TABLE = "DROP TABLE IF EXISTS ${Task.TABLE_NAME}"
@@ -34,6 +35,7 @@ class DatabaseManager(context: Context) : SQLiteOpenHelper(context, DATABASE_NAM
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         onDestroy(db)
         onCreate(db)
+        //db.execSQL("ALTER TABLE ${Task.TABLE_NAME} ADD COLUMN ${Task.COLUMN_NAME_PRIORITY} INTEGER")
     }
 
     private fun onDestroy(db: SQLiteDatabase) {

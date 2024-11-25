@@ -5,6 +5,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todolist.data.entities.Task
 import com.example.todolist.databinding.ItemTaskBinding
+import com.example.todolist.utils.getFormattedDate
+import com.example.todolist.utils.getFormattedDateTime
+import com.example.todolist.utils.getFormattedTime
+import com.example.todolist.utils.isToday
+import com.example.todolist.utils.isTomorrow
+import com.example.todolist.utils.isYesterday
+import java.text.DateFormat
+import java.util.Locale
 
 class TaskAdapter(
     var items: List<Task>,
@@ -45,8 +53,25 @@ class TaskAdapter(
 
 class ViewHolder(val binding: ItemTaskBinding) : RecyclerView.ViewHolder(binding.root) {
 
+    private val context = binding.root.context
+
     fun render(task: Task) {
         binding.nameTextView.text = task.title
         binding.doneCheckBox.isChecked = task.done
+        task.getCalendar()?.let { calendar ->
+            var dateText = if (calendar.isToday()) {
+                "Hoy"
+            } else if (calendar.isTomorrow()) {
+                "Mañana"
+            } else if (calendar.isYesterday()) {
+                "Ayer"
+            } else {
+                calendar.getFormattedDate()
+            }
+            if (!task.allDay) {
+                dateText += " " + calendar.getFormattedTime()
+            }
+            binding.dateTextView.text = dateText
+        }
     }
 }

@@ -1,6 +1,11 @@
 package com.example.todolist.data.entities
 
+import com.example.todolist.utils.isToday
+import com.example.todolist.utils.isTomorrow
+import com.example.todolist.utils.isYesterday
+import java.text.DateFormat
 import java.util.Calendar
+import java.util.Locale
 
 data class Task(
     val id: Long,
@@ -10,6 +15,7 @@ data class Task(
     var allDay: Boolean = false,
     var date: Long = 0,
     var time: Long = 0,
+    var priority: Int = 0,
     var done: Boolean = false
 ) {
     companion object {
@@ -21,6 +27,7 @@ data class Task(
         const val COLUMN_NAME_ALL_DAY = "allDay"
         const val COLUMN_NAME_DATE = "date"
         const val COLUMN_NAME_TIME = "time"
+        const val COLUMN_NAME_PRIORITY = "priority"
         const val COLUMN_NAME_DONE = "done"
         val COLUMN_NAMES = arrayOf(
             COLUMN_ID,
@@ -30,6 +37,7 @@ data class Task(
             COLUMN_NAME_ALL_DAY,
             COLUMN_NAME_DATE,
             COLUMN_NAME_TIME,
+            COLUMN_NAME_PRIORITY,
             COLUMN_NAME_DONE
         )
     }
