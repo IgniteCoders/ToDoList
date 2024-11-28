@@ -98,6 +98,10 @@ class TaskActivity : AppCompatActivity() {
             }
         }
 
+        binding.priorityAutoCompleteTextView.setOnItemClickListener { parent, view, position, id ->
+            task.priority = position
+        }
+
         binding.saveButton.setOnClickListener {
             saveTask()
         }
@@ -114,6 +118,7 @@ class TaskActivity : AppCompatActivity() {
         binding.descriptionTextField.editText?.setText(task.description)
         binding.reminderSwitch.isChecked = task.reminder
         binding.allDaySwitch.isChecked = task.allDay
+        setPriority()
 
         if (task.reminder) {
             calendar = task.getCalendar()!!
@@ -122,6 +127,11 @@ class TaskActivity : AppCompatActivity() {
         }
         setDate(calendar)
         setTime(calendar)
+    }
+
+    private fun setPriority() {
+        val item = binding.priorityAutoCompleteTextView.adapter.getItem(task.priority) as (String)
+        binding.priorityAutoCompleteTextView.setText(item, false)
     }
 
     private fun setDate(calendar: Calendar) {

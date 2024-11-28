@@ -42,6 +42,13 @@
 
         </LinearLayout>
 
+        <ImageView
+            android:id="@+id/priorityImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_priority"
+            app:tint="@color/delete"/>
+
         <ImageButton
             android:id="@+id/deleteButton"
             android:layout_width="wrap_content"

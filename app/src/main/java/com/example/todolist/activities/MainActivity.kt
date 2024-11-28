@@ -13,6 +13,7 @@ import com.example.todolist.adapters.TaskAdapter
 import com.example.todolist.data.entities.Task
 import com.example.todolist.data.providers.TaskDAO
 import com.example.todolist.databinding.ActivityMainBinding
+import com.example.todolist.utils.getFormattedDate
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.text.DateFormat
 import java.util.Calendar
@@ -68,8 +69,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        val dateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault())
-        binding.dateTextView.text = dateFormat.format(Calendar.getInstance().time)
+        binding.dateTextView.text = Calendar.getInstance().getFormattedDate(DateFormat.LONG)
     }
 
     override fun onResume() {
@@ -81,14 +81,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     // Funcion para cuando marcamos una tarea (finalizada/pendiente)
-    fun checkTask(task: Task) {
+    private fun checkTask(task: Task) {
         task.done = !task.done
         taskDAO.update(task)
         adapter.updateItems(taskList)
     }
 
     // Funciona para mostrar un dialogo para borrar la tarea
-    fun deleteTask(task: Task) {
+    private fun deleteTask(task: Task) {
         // Mostramos un dialogo para asegurarnos de que el usuario quiere borrar la tarea
         MaterialAlertDialogBuilder(this)
             .setTitle("Borrar tarea")
@@ -96,7 +96,7 @@ class MainActivity : AppCompatActivity() {
             .setPositiveButton(android.R.string.ok) { dialog, which ->
                 // Borramos la tarea en caso de pulsar el boton OK
                 taskDAO.delete(task)
-                taskList.remove(task)
+                taskList = taskList.minus(task).toMutableList()
                 adapter.updateItems(taskList)
             }
             .setNegativeButton(android.R.string.cancel, null)
@@ -105,7 +105,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     // Mostramos la tarea para editarla
-    fun showTask(task: Task) {
+    private fun showTask(task: Task) {
         val intent = Intent(this, TaskActivity::class.java)
         intent.putExtra(TaskActivity.EXTRA_TASK_ID, task.id)
         startActivity(intent)

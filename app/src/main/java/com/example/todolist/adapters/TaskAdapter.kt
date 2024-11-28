@@ -1,10 +1,14 @@
 package com.example.todolist.adapters
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.example.todolist.R
 import com.example.todolist.data.entities.Task
 import com.example.todolist.databinding.ItemTaskBinding
+import com.example.todolist.utils.TaskDiffUtils
 import com.example.todolist.utils.getFormattedDate
 import com.example.todolist.utils.getFormattedDateTime
 import com.example.todolist.utils.getFormattedTime
@@ -46,8 +50,10 @@ class TaskAdapter(
     }
 
     fun updateItems(items: List<Task>) {
+        val diffUtils = TaskDiffUtils(this.items, items)
+        val diffResult = DiffUtil.calculateDiff(diffUtils)
         this.items = items
-        notifyDataSetChanged()
+        diffResult.dispatchUpdatesTo(this)
     }
 }
 
@@ -58,6 +64,13 @@ class ViewHolder(val binding: ItemTaskBinding) : RecyclerView.ViewHolder(binding
     fun render(task: Task) {
         binding.nameTextView.text = task.title
         binding.doneCheckBox.isChecked = task.done
+
+        binding.priorityImageView.setColorFilter(context.getColor(task.getPriorityColor()))
+        when (task.priority) {
+            0 -> binding.priorityImageView.visibility = View.GONE
+            1, 2 -> binding.priorityImageView.visibility = View.VISIBLE
+        }
+
         task.getCalendar()?.let { calendar ->
             var dateText = if (calendar.isToday()) {
                 "Hoy"

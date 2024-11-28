@@ -1,5 +1,7 @@
 package com.example.todolist.data.entities
 
+import android.view.View
+import com.example.todolist.R
 import com.example.todolist.utils.isToday
 import com.example.todolist.utils.isTomorrow
 import com.example.todolist.utils.isYesterday
@@ -40,6 +42,14 @@ data class Task(
             COLUMN_NAME_PRIORITY,
             COLUMN_NAME_DONE
         )
+    }
+
+    fun getPriorityColor(): Int {
+        return when (priority) {
+            1 -> R.color.priority_high
+            2 -> R.color.priority_urgent
+            else -> R.color.white
+        }
     }
 
     fun getCalendar(): Calendar? {
