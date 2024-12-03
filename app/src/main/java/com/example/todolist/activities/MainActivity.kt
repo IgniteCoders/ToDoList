@@ -1,12 +1,14 @@
 package com.example.todolist.activities
 
 import android.content.Intent
+import android.graphics.Canvas
+import android.graphics.Typeface
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,9 +19,9 @@ import com.example.todolist.data.providers.TaskDAO
 import com.example.todolist.databinding.ActivityMainBinding
 import com.example.todolist.utils.getFormattedDate
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import java.text.DateFormat
 import java.util.Calendar
-import java.util.Locale
 
 
 class MainActivity : AppCompatActivity() {
@@ -104,6 +106,29 @@ class MainActivity : AppCompatActivity() {
                     } else {
                         checkTask(viewHolder.adapterPosition)
                     }
+                }
+
+                override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
+                    dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
+
+                    val whiteColor = getColor(R.color.white)
+                    RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+
+                        .addSwipeLeftBackgroundColor(getColor(R.color.delete))
+                        .addSwipeLeftActionIcon(R.drawable.ic_delete)
+                        .addSwipeLeftLabel(getString(R.string.action_delete))
+                        .setSwipeLeftLabelColor(whiteColor)
+
+                        .addSwipeRightBackgroundColor(getColor(R.color.secondaryColor))
+                        .addSwipeRightActionIcon(R.drawable.ic_check)
+                        .addSwipeRightLabel(getString(R.string.action_check))
+                        .setSwipeRightLabelColor(whiteColor)
+
+                        .setActionIconTint(whiteColor)
+                        .create()
+                        .decorate()
+
+                    super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
                 }
             })
         gestures.attachToRecyclerView(binding.recyclerView)

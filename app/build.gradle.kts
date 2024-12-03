@@ -39,6 +39,8 @@ android {
 }
 
 dependencies {
+    implementation (libs.recyclerview.swipedecorator)
+
     implementation(libs.androidx.sqlite)
 
     implementation(libs.androidx.core.ktx)
