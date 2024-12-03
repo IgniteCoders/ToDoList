@@ -28,15 +28,15 @@ class TaskAdapter(
         val task = items[position]
         holder.render(task)
         holder.itemView.setOnClickListener {
-            onItemClick(position)
+            onItemClick(holder.adapterPosition)
         }
         holder.binding.doneCheckBox.setOnCheckedChangeListener { checkBox, isChecked ->
             if (checkBox.isPressed) {
-                onItemCheck(position)
+                onItemCheck(holder.adapterPosition)
             }
         }
         holder.binding.deleteButton.setOnClickListener {
-            onItemDelete(position)
+            onItemDelete(holder.adapterPosition)
         }
     }
 

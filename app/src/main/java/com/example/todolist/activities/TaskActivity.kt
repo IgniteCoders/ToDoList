@@ -14,10 +14,7 @@ import com.example.todolist.data.providers.TaskDAO
 import com.example.todolist.databinding.ActivityTaskBinding
 import com.example.todolist.utils.getFormattedDate
 import com.example.todolist.utils.getFormattedTime
-import java.text.DateFormat
-import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Locale
 
 
 class TaskActivity : AppCompatActivity() {
@@ -58,12 +55,12 @@ class TaskActivity : AppCompatActivity() {
             Task(-1, "")
         }
 
-        loadViews()
+        initViews()
 
         loadData()
     }
 
-    private fun loadViews() {
+    private fun initViews() {
         //binding.titleTextField.requestFocus()
 
         binding.closeButton.setOnClickListener { finish() }

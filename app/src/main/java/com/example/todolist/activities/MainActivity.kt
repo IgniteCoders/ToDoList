@@ -7,7 +7,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.todolist.R
 import com.example.todolist.adapters.TaskAdapter
 import com.example.todolist.data.entities.Task
@@ -46,19 +48,17 @@ class MainActivity : AppCompatActivity() {
 
         taskDAO = TaskDAO(this)
 
-        adapter = TaskAdapter(taskList, {
-            // Editar tarea
-            val task = taskList[it]
-            showTask(task)
-        }, {
-            // Marcar tarea
-            val task = taskList[it]
-            checkTask(task)
-        }, {
-            // Borrar tarea
-            val task = taskList[it]
-            deleteTask(task)
-        })
+        initViews()
+
+        loadData()
+    }
+
+    private fun initViews() {
+        adapter = TaskAdapter(taskList,
+            { showTask(it) },
+            { checkTask(it) },
+            { deleteTask(it) }
+        )
 
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
@@ -70,42 +70,78 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.dateTextView.text = Calendar.getInstance().getFormattedDate(DateFormat.LONG)
+
+        configureGestures()
+    }
+
+    private fun loadData() {
+        taskList = taskDAO.findAll().toMutableList()
+        adapter.updateItems(taskList)
     }
 
     override fun onResume() {
         super.onResume()
 
         // Cargamos la lista por si se hubiera añadido una tarea nueva
-        taskList = taskDAO.findAll().toMutableList()
-        adapter.updateItems(taskList)
+        loadData()
+    }
+
+    private fun configureGestures() {
+        val gestures = ItemTouchHelper(
+            object : ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP or ItemTouchHelper.DOWN, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+                override fun onMove(
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder,
+                    target: RecyclerView.ViewHolder
+                ): Boolean {
+                    adapter.notifyItemMoved(viewHolder.adapterPosition, target.adapterPosition)
+                    return true
+                }
+
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    if (direction == ItemTouchHelper.LEFT) {
+                        deleteTask(viewHolder.adapterPosition)
+                    } else {
+                        checkTask(viewHolder.adapterPosition)
+                    }
+                }
+            })
+        gestures.attachToRecyclerView(binding.recyclerView)
     }
 
     // Funcion para cuando marcamos una tarea (finalizada/pendiente)
-    private fun checkTask(task: Task) {
+    private fun checkTask(position: Int) {
+        val task = taskList[position]
         task.done = !task.done
         taskDAO.update(task)
-        adapter.updateItems(taskList)
+        adapter.notifyItemChanged(position)
+        loadData()
     }
 
     // Funciona para mostrar un dialogo para borrar la tarea
-    private fun deleteTask(task: Task) {
+    private fun deleteTask(position: Int) {
+        val task = taskList[position]
         // Mostramos un dialogo para asegurarnos de que el usuario quiere borrar la tarea
         MaterialAlertDialogBuilder(this)
             .setTitle("Borrar tarea")
             .setMessage("Estas seguro de que quieres borrar la tarea?")
-            .setPositiveButton(android.R.string.ok) { dialog, which ->
+            .setPositiveButton(android.R.string.ok) { dialog, _ ->
                 // Borramos la tarea en caso de pulsar el boton OK
                 taskDAO.delete(task)
-                taskList = taskList.minus(task).toMutableList()
-                adapter.updateItems(taskList)
+                loadData()
+                dialog.dismiss()
             }
-            .setNegativeButton(android.R.string.cancel, null)
+            .setNegativeButton(android.R.string.cancel) { dialog, _ ->
+                adapter.notifyItemChanged(position)
+                dialog.dismiss()
+            }
             .setIcon(R.drawable.ic_delete)
             .show()
     }
 
     // Mostramos la tarea para editarla
-    private fun showTask(task: Task) {
+    private fun showTask(position: Int) {
+        val task = taskList[position]
         val intent = Intent(this, TaskActivity::class.java)
         intent.putExtra(TaskActivity.EXTRA_TASK_ID, task.id)
         startActivity(intent)
