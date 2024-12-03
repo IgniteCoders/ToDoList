@@ -9,6 +9,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.todolist.R
 import com.example.todolist.data.entities.Task
 import com.example.todolist.data.providers.TaskDAO
 import com.example.todolist.databinding.ActivityTaskBinding
@@ -106,9 +107,9 @@ class TaskActivity : AppCompatActivity() {
 
     private fun loadData() {
         binding.titleTextView.text = if (isEditing) {
-            "Editar tarea"
+            getString(R.string.activity_task_title_edit)
         } else {
-            "Nueva tarea"
+            getString(R.string.activity_task_title_create)
         }
 
         binding.titleTextField.editText?.setText(task.title)
@@ -173,13 +174,13 @@ class TaskActivity : AppCompatActivity() {
     private fun validateTask(): Boolean {
         // Comprobamos el texto introducido para mostrar posibles errores
         if (task.title.trim().isEmpty()) {
-            binding.titleTextField.error = "Escribe algo"
+            binding.titleTextField.error = getString(R.string.field_error_task_title_empty)
             return false
         } else {
             binding.titleTextField.error = null
         }
         if (task.title.length > 50) {
-            binding.titleTextField.error = "Te pasaste"
+            binding.titleTextField.error = getString(R.string.field_error_task_title_too_long)
             return false
         } else {
             binding.titleTextField.error = null
@@ -187,13 +188,13 @@ class TaskActivity : AppCompatActivity() {
 
         if (task.reminder) {
             if (binding.dateTextField.editText?.text.isNullOrEmpty()) {
-                binding.dateTextField.error = "Selecciona una fecha"
+                binding.dateTextField.error = getString(R.string.field_error_task_date_empty)
                 return false
             } else {
                 binding.dateTextField.error = null
             }
             if (!task.allDay && binding.timeTextField.editText?.text.isNullOrEmpty()) {
-                binding.timeTextField.error = "Selecciona una hora"
+                binding.timeTextField.error = getString(R.string.field_error_task_time_empty)
                 return false
             } else {
                 binding.timeTextField.error = null

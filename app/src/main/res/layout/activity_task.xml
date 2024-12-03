@@ -67,7 +67,7 @@
             android:id="@+id/titleTextField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Tarea a realizar..."
+            android:hint="@string/label_task_title"
             app:startIconDrawable="@drawable/ic_edit"
             android:layout_marginTop="16dp"
             app:counterEnabled="true"
@@ -90,7 +90,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Categoría:"
+                android:text="@string/label_task_category"
                 android:textStyle="bold"/>
 
             <ImageButton
@@ -104,7 +104,7 @@
             android:id="@+id/priorityTextField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Prioridad"
+            android:hint="@string/label_task_priority"
             app:startIconDrawable="@drawable/ic_priority"
             android:layout_marginTop="16dp"
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
@@ -115,7 +115,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="none"
                 app:simpleItems="@array/priority"
-                android:text="Normal"
+                android:text="@string/priority_normal"
                 />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -132,7 +132,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Recordatorio:"
+                android:text="@string/label_task_reminder"
                 android:textStyle="bold"/>
 
             <com.google.android.material.materialswitch.MaterialSwitch
@@ -153,7 +153,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Todo el día:"
+                android:text="@string/label_task_all_day"
                 android:textStyle="bold"/>
 
             <com.google.android.material.materialswitch.MaterialSwitch
@@ -177,7 +177,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:clickable="false"
-                android:hint="Fecha"
+                android:hint="@string/label_task_date"
                 app:startIconDrawable="@drawable/ic_calendar"
                 android:enabled="false">
 
@@ -200,7 +200,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:clickable="false"
-                android:hint="Hora"
+                android:hint="@string/label_task_time"
                 app:startIconDrawable="@drawable/ic_clock"
                 android:enabled="false">
 
@@ -219,7 +219,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:hint="Descripción..."
+            android:hint="@string/label_task_description"
             app:counterEnabled="true"
             app:counterMaxLength="300">
 
@@ -240,7 +240,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="24dp"
-        android:text="Guardar"
+        android:text="@string/action_save"
         app:icon="@drawable/ic_save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -148,8 +148,8 @@ class MainActivity : AppCompatActivity() {
         val task = taskList[position]
         // Mostramos un dialogo para asegurarnos de que el usuario quiere borrar la tarea
         MaterialAlertDialogBuilder(this)
-            .setTitle("Borrar tarea")
-            .setMessage("Estas seguro de que quieres borrar la tarea?")
+            .setTitle(R.string.alert_dialog_delete_title)
+            .setMessage(R.string.alert_dialog_delete_message)
             .setPositiveButton(android.R.string.ok) { dialog, _ ->
                 // Borramos la tarea en caso de pulsar el boton OK
                 taskDAO.delete(task)
