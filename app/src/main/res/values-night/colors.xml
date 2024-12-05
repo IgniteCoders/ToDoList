@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primaryColorLight">#FFBB86FC</color>
+    <color name="primaryColor">#4A3780</color>
+    <color name="primaryColorVariant">#3A2B64</color>
+    <color name="secondaryColor">#9EA638</color>
+    <color name="secondaryColorVariant">#676D19</color>
+
+    <color name="background">#323234</color>
+
+    <color name="cell_background">#191919</color>
+</resources>

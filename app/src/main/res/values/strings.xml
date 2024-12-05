@@ -34,4 +34,8 @@
     <string name="action_delete">DELETE</string>
     <string name="action_check">CHECK</string>
     <string name="action_uncheck">UNCHECK</string>
+
+
+    <string name="new_category">New</string>
+    <string name="all_category">All</string>
 </resources>

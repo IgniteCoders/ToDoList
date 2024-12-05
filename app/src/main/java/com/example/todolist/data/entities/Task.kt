@@ -1,13 +1,7 @@
 package com.example.todolist.data.entities
 
-import android.view.View
 import com.example.todolist.R
-import com.example.todolist.utils.isToday
-import com.example.todolist.utils.isTomorrow
-import com.example.todolist.utils.isYesterday
-import java.text.DateFormat
 import java.util.Calendar
-import java.util.Locale
 
 data class Task(
     val id: Long,
@@ -18,11 +12,12 @@ data class Task(
     var date: Long = 0,
     var time: Long = 0,
     var priority: Int = 0,
-    var done: Boolean = false
+    var done: Boolean = false,
+    var category: Category
 ) {
     companion object {
         const val TABLE_NAME = "Task"
-        const val COLUMN_ID = "id"
+        const val COLUMN_NAME_ID = "id"
         const val COLUMN_NAME_TITLE = "title"
         const val COLUMN_NAME_DESCRIPTION = "description"
         const val COLUMN_NAME_REMINDER = "reminder"
@@ -31,8 +26,9 @@ data class Task(
         const val COLUMN_NAME_TIME = "time"
         const val COLUMN_NAME_PRIORITY = "priority"
         const val COLUMN_NAME_DONE = "done"
+        const val COLUMN_NAME_CATEGORY = "category_id"
         val COLUMN_NAMES = arrayOf(
-            COLUMN_ID,
+            COLUMN_NAME_ID,
             COLUMN_NAME_TITLE,
             COLUMN_NAME_DESCRIPTION,
             COLUMN_NAME_REMINDER,
@@ -40,7 +36,8 @@ data class Task(
             COLUMN_NAME_DATE,
             COLUMN_NAME_TIME,
             COLUMN_NAME_PRIORITY,
-            COLUMN_NAME_DONE
+            COLUMN_NAME_DONE,
+            COLUMN_NAME_CATEGORY
         )
     }
 

@@ -10,7 +10,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.todolist.R
+import com.example.todolist.adapters.CategoryAdapter
+import com.example.todolist.data.entities.Category
 import com.example.todolist.data.entities.Task
+import com.example.todolist.data.providers.CategoryDAO
 import com.example.todolist.data.providers.TaskDAO
 import com.example.todolist.databinding.ActivityTaskBinding
 import com.example.todolist.utils.getFormattedDate
@@ -31,6 +34,12 @@ class TaskActivity : AppCompatActivity() {
     lateinit var task: Task
     lateinit var calendar: Calendar
 
+    lateinit var categoryDAO: CategoryDAO
+    var categoryList: MutableList<Category> = mutableListOf()
+    lateinit var category: Category
+
+    lateinit var categoryAdapter: CategoryAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -44,17 +53,23 @@ class TaskActivity : AppCompatActivity() {
             insets
         }
 
+        categoryDAO = CategoryDAO(this)
         taskDAO = TaskDAO(this)
+
+        categoryList = categoryDAO.findAll().toMutableList()
 
         // Si nos pasan un id es que queremos editar una tarea existente
         val id = intent.getLongExtra(EXTRA_TASK_ID, -1L)
-        task = if (id != -1L) {
+        if (id != -1L) {
             isEditing = true
-            taskDAO.findById(id)!!
+            task = taskDAO.findById(id)!!
+            category = task.category
         } else {
             isEditing = false
-            Task(-1, "")
+            category = categoryList.first()
+            task = Task(-1, "", category = category)
         }
+
 
         initViews()
 
@@ -103,6 +118,25 @@ class TaskActivity : AppCompatActivity() {
         binding.saveButton.setOnClickListener {
             saveTask()
         }
+
+
+        val categoryNew = Category(-1, getString(R.string.new_category), R.color.secondaryColor, R.drawable.ic_add)
+        categoryList.add(categoryNew)
+        categoryAdapter = CategoryAdapter(categoryList, { position ->
+            if (position == categoryList.size) {
+                //addCategory()
+            } else {
+                //selectCategory()
+            }
+        }, { position ->
+            if (position == categoryList.size) {
+                false
+            } else {
+                //editCategory()
+                true
+            }
+        })
+        binding.categoryRecyclerView.adapter = categoryAdapter
     }
 
     private fun loadData() {

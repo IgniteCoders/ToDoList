@@ -85,7 +85,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginTop="16dp"
-            android:paddingVertical="8dp">
+            android:gravity="center_vertical">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -93,9 +93,14 @@
                 android:text="@string/label_task_category"
                 android:textStyle="bold"/>
 
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/categoryRecyclerView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                tools:listitem="@layout/item_category"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:orientation="horizontal"/>
 
         </LinearLayout>
 

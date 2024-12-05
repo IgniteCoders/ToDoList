@@ -26,6 +26,11 @@ fun Calendar.isYesterday(): Boolean {
     return this.isSameDay(yesterday)
 }
 
+fun Calendar.isBeforeToday(): Boolean {
+    val today = Calendar.getInstance()
+    return this.before(today)
+}
+
 fun Calendar.getFormattedDate(format: Int = DateFormat.SHORT): String {
     val dateFormat = DateFormat.getDateInstance(format, Locale.getDefault())
     return dateFormat.format(this.time)

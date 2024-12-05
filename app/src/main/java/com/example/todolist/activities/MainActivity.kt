@@ -11,8 +11,11 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todolist.R
+import com.example.todolist.adapters.CategoryAdapter
 import com.example.todolist.adapters.TaskAdapter
+import com.example.todolist.data.entities.Category
 import com.example.todolist.data.entities.Task
+import com.example.todolist.data.providers.CategoryDAO
 import com.example.todolist.data.providers.TaskDAO
 import com.example.todolist.databinding.ActivityMainBinding
 import com.example.todolist.utils.getFormattedDate
@@ -26,11 +29,16 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
 
+    lateinit var taskDAO: TaskDAO
+    var taskList: MutableList<Task> = mutableListOf()
+
     lateinit var adapter: TaskAdapter
 
-    lateinit var taskDAO: TaskDAO
+    lateinit var categoryDAO: CategoryDAO
+    var categoryList: MutableList<Category> = mutableListOf()
+    var category: Category? = null
 
-    var taskList: MutableList<Task> = mutableListOf()
+    lateinit var categoryAdapter: CategoryAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,7 +54,10 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
+        categoryDAO = CategoryDAO(this)
         taskDAO = TaskDAO(this)
+
+        categoryList = categoryDAO.findAll().toMutableList()
 
         initViews()
 
@@ -72,10 +83,29 @@ class MainActivity : AppCompatActivity() {
         binding.dateTextView.text = Calendar.getInstance().getFormattedDate(DateFormat.LONG)
 
         configureGestures()
+
+
+        val categoryAll = Category(-1, getString(R.string.all_category), R.color.secondaryColor, R.drawable.ic_add)
+        categoryList.add(0, categoryAll)
+        categoryAdapter = CategoryAdapter(categoryList, { position ->
+            if (position == 0) {
+                category = null
+            } else {
+                category = categoryList[position]
+            }
+            loadData()
+        }, {
+            false
+        })
+        binding.categoryRecyclerView.adapter = categoryAdapter
     }
 
     private fun loadData() {
-        taskList = taskDAO.findAll().toMutableList()
+        if (category != null) {
+            taskList = taskDAO.findAllByCategory(category!!).toMutableList()
+        } else {
+            taskList = taskDAO.findAll().toMutableList()
+        }
         adapter.updateItems(taskList)
     }
 

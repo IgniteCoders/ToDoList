@@ -12,6 +12,7 @@ import com.example.todolist.utils.TaskDiffUtils
 import com.example.todolist.utils.getFormattedDate
 import com.example.todolist.utils.getFormattedDateTime
 import com.example.todolist.utils.getFormattedTime
+import com.example.todolist.utils.isBeforeToday
 import com.example.todolist.utils.isToday
 import com.example.todolist.utils.isTomorrow
 import com.example.todolist.utils.isYesterday
@@ -35,9 +36,9 @@ class TaskAdapter(
                 onItemCheck(holder.adapterPosition)
             }
         }
-        holder.binding.deleteButton.setOnClickListener {
+        /*holder.binding.deleteButton.setOnClickListener {
             onItemDelete(holder.adapterPosition)
-        }
+        }*/
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -89,7 +90,16 @@ class TaskAdapter(
                     dateText += " " + calendar.getFormattedTime()
                 }
                 binding.dateTextView.text = dateText
+
+                if (calendar.isBeforeToday()) {
+                    binding.dateTextView.setTextColor(context.getColor(R.color.expired_date))
+                } else {
+                    binding.dateTextView.setTextColor(context.getColor(R.color.gray))
+                }
             }
+
+            binding.categoryView.setColorFilter(context.getColor(task.category.color))
+            binding.categoryView.setImageResource(task.category.icon)
         }
 
         fun isChecked (): Boolean {
