@@ -2,11 +2,9 @@ package com.example.todolist.activities
 
 import android.content.Intent
 import android.graphics.Canvas
-import android.graphics.Typeface
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -52,7 +50,7 @@ class MainActivity : AppCompatActivity() {
 
         initViews()
 
-        loadData()
+        //loadData()
     }
 
     private fun initViews() {
@@ -111,20 +109,28 @@ class MainActivity : AppCompatActivity() {
                 override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
                     dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
 
+                    val isChecked = (viewHolder as TaskAdapter.ViewHolder).isChecked()
+                    val rightIconRes = if (isChecked) R.drawable.ic_box_unchecked else R.drawable.ic_box_checked
+                    val rightTextRes = if (isChecked) R.string.action_uncheck else R.string.action_check
                     val whiteColor = getColor(R.color.white)
-                    RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
 
-                        .addSwipeLeftBackgroundColor(getColor(R.color.delete))
-                        .addSwipeLeftActionIcon(R.drawable.ic_delete)
+                    val swipeDecoratorBuilder = RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+
+                        // Swipe left action
                         .addSwipeLeftLabel(getString(R.string.action_delete))
                         .setSwipeLeftLabelColor(whiteColor)
+                        .addSwipeLeftActionIcon(R.drawable.ic_delete)
+                        .setSwipeLeftActionIconTint(whiteColor)
+                        .addSwipeLeftBackgroundColor(getColor(R.color.delete))
 
-                        .addSwipeRightBackgroundColor(getColor(R.color.secondaryColor))
-                        .addSwipeRightActionIcon(R.drawable.ic_check)
-                        .addSwipeRightLabel(getString(R.string.action_check))
+                        // Swipe right action
+                        .addSwipeRightLabel(getString(rightTextRes))
                         .setSwipeRightLabelColor(whiteColor)
+                        .addSwipeRightActionIcon(rightIconRes)
+                        .setSwipeRightActionIconTint(whiteColor)
+                        .addSwipeRightBackgroundColor(getColor(R.color.secondaryColor))
 
-                        .setActionIconTint(whiteColor)
+                        // Build
                         .create()
                         .decorate()
 

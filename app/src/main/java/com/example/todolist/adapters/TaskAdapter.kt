@@ -23,7 +23,7 @@ class TaskAdapter(
     val onItemClick: (Int) -> Unit,
     val onItemCheck: (Int) -> Unit,
     val onItemDelete: (Int) -> Unit
-) : RecyclerView.Adapter<ViewHolder>() {
+) : RecyclerView.Adapter<TaskAdapter.ViewHolder>() {
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val task = items[position]
         holder.render(task)
@@ -55,36 +55,45 @@ class TaskAdapter(
         this.items = items
         diffResult.dispatchUpdatesTo(this)
     }
-}
 
-class ViewHolder(val binding: ItemTaskBinding) : RecyclerView.ViewHolder(binding.root) {
 
-    private val context = binding.root.context
 
-    fun render(task: Task) {
-        binding.nameTextView.text = task.title
-        binding.doneCheckBox.isChecked = task.done
+    class ViewHolder(val binding: ItemTaskBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        binding.priorityImageView.setColorFilter(context.getColor(task.getPriorityColor()))
-        when (task.priority) {
-            0 -> binding.priorityImageView.visibility = View.GONE
-            1, 2 -> binding.priorityImageView.visibility = View.VISIBLE
+        private val context = binding.root.context
+        private lateinit var task: Task
+
+        fun render(task: Task) {
+            this.task = task
+
+            binding.nameTextView.text = task.title
+            binding.doneCheckBox.isChecked = task.done
+
+            binding.priorityImageView.setColorFilter(context.getColor(task.getPriorityColor()))
+            when (task.priority) {
+                0 -> binding.priorityImageView.visibility = View.GONE
+                1, 2 -> binding.priorityImageView.visibility = View.VISIBLE
+            }
+
+            task.getCalendar()?.let { calendar ->
+                var dateText = if (calendar.isToday()) {
+                    context.getString(R.string.calendar_today)
+                } else if (calendar.isTomorrow()) {
+                    context.getString(R.string.calendar_tomorrow)
+                } else if (calendar.isYesterday()) {
+                    context.getString(R.string.calendar_yesterday)
+                } else {
+                    calendar.getFormattedDate()
+                }
+                if (!task.allDay) {
+                    dateText += " " + calendar.getFormattedTime()
+                }
+                binding.dateTextView.text = dateText
+            }
         }
 
-        task.getCalendar()?.let { calendar ->
-            var dateText = if (calendar.isToday()) {
-                "Hoy"
-            } else if (calendar.isTomorrow()) {
-                "Mañana"
-            } else if (calendar.isYesterday()) {
-                "Ayer"
-            } else {
-                calendar.getFormattedDate()
-            }
-            if (!task.allDay) {
-                dateText += " " + calendar.getFormattedTime()
-            }
-            binding.dateTextView.text = dateText
+        fun isChecked (): Boolean {
+            return task.done
         }
     }
 }

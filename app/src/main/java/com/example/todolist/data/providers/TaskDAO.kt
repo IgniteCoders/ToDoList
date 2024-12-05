@@ -130,7 +130,7 @@ class TaskDAO(val context: Context) {
                 null,                   // The values for the WHERE clause
                 null,                       // don't group the rows
                 null,                         // don't filter by row groups
-                Task.COLUMN_NAME_DONE                         // The sort order
+                "${Task.COLUMN_NAME_DONE}, ${Task.COLUMN_NAME_DATE}, ${Task.COLUMN_NAME_TIME}"                        // The sort order
             )
 
             while (cursor.moveToNext()) {
