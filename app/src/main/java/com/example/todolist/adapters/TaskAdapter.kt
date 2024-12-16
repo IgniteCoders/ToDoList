@@ -98,7 +98,7 @@ class TaskAdapter(
                 }
             }
 
-            binding.categoryView.setColorFilter(context.getColor(task.category.color))
+            binding.categoryView.setColorFilter(task.category.color)
             binding.categoryView.setImageResource(task.category.icon)
         }
 

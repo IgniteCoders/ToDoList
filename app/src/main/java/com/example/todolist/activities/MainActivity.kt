@@ -1,210 +1,85 @@
 package com.example.todolist.activities
 
 import android.content.Intent
-import android.graphics.Canvas
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.GridLayoutManager
 import com.example.todolist.R
 import com.example.todolist.adapters.CategoryAdapter
-import com.example.todolist.adapters.TaskAdapter
 import com.example.todolist.data.entities.Category
-import com.example.todolist.data.entities.Task
 import com.example.todolist.data.providers.CategoryDAO
-import com.example.todolist.data.providers.TaskDAO
 import com.example.todolist.databinding.ActivityMainBinding
 import com.example.todolist.utils.getFormattedDate
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import java.text.DateFormat
 import java.util.Calendar
-
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
 
-    lateinit var taskDAO: TaskDAO
-    var taskList: MutableList<Task> = mutableListOf()
-
-    lateinit var adapter: TaskAdapter
+    lateinit var adapter: CategoryAdapter
 
     lateinit var categoryDAO: CategoryDAO
     var categoryList: MutableList<Category> = mutableListOf()
-    var category: Category? = null
-
-    lateinit var categoryAdapter: CategoryAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         enableEdgeToEdge()
 
         binding = ActivityMainBinding.inflate(layoutInflater)
-
         setContentView(binding.root)
 
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
         categoryDAO = CategoryDAO(this)
-        taskDAO = TaskDAO(this)
-
-        categoryList = categoryDAO.findAll().toMutableList()
-
-        initViews()
-
-        //loadData()
-    }
-
-    private fun initViews() {
-        adapter = TaskAdapter(taskList,
-            { showTask(it) },
-            { checkTask(it) },
-            { deleteTask(it) }
-        )
+        adapter = CategoryAdapter(categoryList, {
+            showCategory(it)
+        }, {
+            editCategory(it)
+            true
+        })
 
         binding.recyclerView.adapter = adapter
-        binding.recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        binding.recyclerView.layoutManager = GridLayoutManager(this, 2)
 
-        // Crear tarea
-        binding.addTaskButton.setOnClickListener {
-            val intent = Intent(this, TaskActivity::class.java)
-            startActivity(intent)
-        }
-
-        binding.dateTextView.text = Calendar.getInstance().getFormattedDate(DateFormat.LONG)
-
-        configureGestures()
-
-
-        val categoryAll = Category(-1, getString(R.string.all_category), R.color.secondaryColor, R.drawable.ic_add)
-        categoryList.add(0, categoryAll)
-        categoryAdapter = CategoryAdapter(categoryList, { position ->
-            if (position == 0) {
-                category = null
-            } else {
-                category = categoryList[position]
-            }
-            loadData()
-        }, {
-            false
-        })
-        binding.categoryRecyclerView.adapter = categoryAdapter
-    }
-
-    private fun loadData() {
-        if (category != null) {
-            taskList = taskDAO.findAllByCategory(category!!).toMutableList()
-        } else {
-            taskList = taskDAO.findAll().toMutableList()
-        }
-        adapter.updateItems(taskList)
+        initViews()
     }
 
     override fun onResume() {
         super.onResume()
 
-        // Cargamos la lista por si se hubiera añadido una tarea nueva
-        loadData()
+        categoryList = categoryDAO.findAll().toMutableList()
+        adapter.updateItems(categoryList)
     }
 
-    private fun configureGestures() {
-        val gestures = ItemTouchHelper(
-            object : ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP or ItemTouchHelper.DOWN, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
-                override fun onMove(
-                    recyclerView: RecyclerView,
-                    viewHolder: RecyclerView.ViewHolder,
-                    target: RecyclerView.ViewHolder
-                ): Boolean {
-                    adapter.notifyItemMoved(viewHolder.adapterPosition, target.adapterPosition)
-                    return true
-                }
+    private fun initViews() {
+        binding.addCategoryButton.setOnClickListener {
+            val intent = Intent(this, CategoryActivity::class.java)
+            startActivity(intent)
+        }
 
-                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                    if (direction == ItemTouchHelper.LEFT) {
-                        deleteTask(viewHolder.adapterPosition)
-                    } else {
-                        checkTask(viewHolder.adapterPosition)
-                    }
-                }
-
-                override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
-                    dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
-
-                    val isChecked = (viewHolder as TaskAdapter.ViewHolder).isChecked()
-                    val rightIconRes = if (isChecked) R.drawable.ic_box_unchecked else R.drawable.ic_box_checked
-                    val rightTextRes = if (isChecked) R.string.action_uncheck else R.string.action_check
-                    val whiteColor = getColor(R.color.white)
-
-                    val swipeDecoratorBuilder = RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
-
-                        // Swipe left action
-                        .addSwipeLeftLabel(getString(R.string.action_delete))
-                        .setSwipeLeftLabelColor(whiteColor)
-                        .addSwipeLeftActionIcon(R.drawable.ic_delete)
-                        .setSwipeLeftActionIconTint(whiteColor)
-                        .addSwipeLeftBackgroundColor(getColor(R.color.delete))
-
-                        // Swipe right action
-                        .addSwipeRightLabel(getString(rightTextRes))
-                        .setSwipeRightLabelColor(whiteColor)
-                        .addSwipeRightActionIcon(rightIconRes)
-                        .setSwipeRightActionIconTint(whiteColor)
-                        .addSwipeRightBackgroundColor(getColor(R.color.secondaryColor))
-
-                        // Build
-                        .create()
-                        .decorate()
-
-                    super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
-                }
-            })
-        gestures.attachToRecyclerView(binding.recyclerView)
+        binding.dateTextView.text = Calendar.getInstance().getFormattedDate(DateFormat.LONG)
     }
 
-    // Funcion para cuando marcamos una tarea (finalizada/pendiente)
-    private fun checkTask(position: Int) {
-        val task = taskList[position]
-        task.done = !task.done
-        taskDAO.update(task)
-        adapter.notifyItemChanged(position)
-        loadData()
+    private fun showCategory(position: Int) {
+        val category = categoryList[position]
+        val intent = Intent(this, TasksActivity::class.java)
+        intent.putExtra(TasksActivity.EXTRA_CATEGORY_ID, category.id)
+        startActivity(intent)
     }
 
-    // Funciona para mostrar un dialogo para borrar la tarea
-    private fun deleteTask(position: Int) {
-        val task = taskList[position]
-        // Mostramos un dialogo para asegurarnos de que el usuario quiere borrar la tarea
-        MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.alert_dialog_delete_title)
-            .setMessage(R.string.alert_dialog_delete_message)
-            .setPositiveButton(android.R.string.ok) { dialog, _ ->
-                // Borramos la tarea en caso de pulsar el boton OK
-                taskDAO.delete(task)
-                loadData()
-                dialog.dismiss()
-            }
-            .setNegativeButton(android.R.string.cancel) { dialog, _ ->
-                adapter.notifyItemChanged(position)
-                dialog.dismiss()
-            }
-            .setIcon(R.drawable.ic_delete)
-            .show()
-    }
-
-    // Mostramos la tarea para editarla
-    private fun showTask(position: Int) {
-        val task = taskList[position]
-        val intent = Intent(this, TaskActivity::class.java)
-        intent.putExtra(TaskActivity.EXTRA_TASK_ID, task.id)
+    private fun editCategory(position: Int) {
+        val category = categoryList[position]
+        val intent = Intent(this, CategoryActivity::class.java)
+        intent.putExtra(CategoryActivity.EXTRA_CATEGORY_ID, category.id)
         startActivity(intent)
     }
 }

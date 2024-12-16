@@ -13,7 +13,7 @@
         android:theme="@style/Theme.ToDoList"
         tools:targetApi="31">
         <activity
-            android:name=".activities.TaskActivity"
+            android:name=".activities.CategoryActivity"
             android:exported="false" />
         <activity
             android:name=".activities.MainActivity"
@@ -24,6 +24,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activities.TaskActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.TasksActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

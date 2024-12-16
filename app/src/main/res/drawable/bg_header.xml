@@ -9,7 +9,7 @@
         android:pathData="M0,0h390v222h-390z"/>
     <path
         android:pathData="M0,0h390v222h-390z"
-        android:fillColor="#4A3780"/>
+        android:fillColor="@color/md_theme_primary"/>
     <path
         android:pathData="M-20,249m-149,0a149,149 0,1 1,298 0a149,149 0,1 1,-298 0"
         android:strokeAlpha="0.119"

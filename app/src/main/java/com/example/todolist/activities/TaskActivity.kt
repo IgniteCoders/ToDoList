@@ -119,17 +119,16 @@ class TaskActivity : AppCompatActivity() {
             saveTask()
         }
 
-
-        val categoryNew = Category(-1, getString(R.string.new_category), R.color.secondaryColor, R.drawable.ic_add)
+        val categoryNew = Category(-1, getString(R.string.new_category), R.color.md_theme_secondary, R.drawable.ic_add)
         categoryList.add(categoryNew)
         categoryAdapter = CategoryAdapter(categoryList, { position ->
-            if (position == categoryList.size) {
+            if (position == categoryList.lastIndex) {
                 //addCategory()
             } else {
                 //selectCategory()
             }
         }, { position ->
-            if (position == categoryList.size) {
+            if (position == categoryList.lastIndex) {
                 false
             } else {
                 //editCategory()

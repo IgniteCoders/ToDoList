@@ -1,5 +1,8 @@
 package com.example.todolist.data.entities
 
+import android.graphics.Color
+import com.example.todolist.R
+
 data class Category (
     var id: Long,
     var name: String,
@@ -18,6 +21,26 @@ data class Category (
             COLUMN_NAME_TITLE,
             COLUMN_NAME_COLOR,
             COLUMN_NAME_ICON
+        )
+
+        val colors = arrayOf(
+            Color.RED,
+            Color.GREEN,
+            Color.BLUE,
+            Color.YELLOW,
+            Color.CYAN,
+            Color.MAGENTA,
+            Color.BLACK,
+            Color.WHITE
+        )
+
+        val icons = arrayOf(
+            R.drawable.ic_clock,
+            R.drawable.ic_calendar,
+            R.drawable.ic_close,
+            R.drawable.ic_box_checked,
+            R.drawable.ic_box_unchecked,
+            R.drawable.ic_save,
         )
     }
 

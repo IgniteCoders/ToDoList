@@ -53,8 +53,9 @@ class CategoryAdapter(
         fun render(category: Category) {
             this.category = category
 
+            binding.nameTextView.text = category.name
             binding.iconImageView.setImageResource(category.icon)
-            binding.colorCardView.setCardBackgroundColor(context.getColor(category.color))
+            binding.colorCardView.setCardBackgroundColor(category.color)
         }
     }
 }

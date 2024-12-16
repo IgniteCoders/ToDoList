@@ -177,4 +177,32 @@ class TaskDAO(val context: Context) {
         return list
     }
 
+    fun countByCategoryAndDone(category: Category): Int {
+        open()
+
+        var count = 0
+
+        try {
+            val cursor = db.query(
+                Task.TABLE_NAME,                 // The table to query
+                arrayOf("COUNT(*)"),     // The array of columns to return (pass null to get all)
+                "${Task.COLUMN_NAME_CATEGORY} = ${category.id} AND ${Task.COLUMN_NAME_DONE} = false",                // The columns for the WHERE clause
+                null,          // The values for the WHERE clause
+                null,                   // don't group the rows
+                null,                   // don't filter by row groups
+                null               // The sort order
+            )
+            if (cursor.moveToNext()) {
+                count = cursor.getInt(0)
+            }
+            cursor.close()
+        } catch (e: Exception) {
+            Log.e("DB", e.stackTraceToString())
+        } finally {
+            close()
+        }
+
+        return count
+    }
+
 }

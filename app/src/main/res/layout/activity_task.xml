@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     tools:context=".activities.TaskActivity">
 
     <!-- Background -->
@@ -42,7 +43,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
             android:gravity="center"
-            android:text="Add new task"
+            android:text="@string/activity_task_title_create"
             android:textColor="@color/white"
             android:textSize="24sp"
             android:textStyle="bold" />
