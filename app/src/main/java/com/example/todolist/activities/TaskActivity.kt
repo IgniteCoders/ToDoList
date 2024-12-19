@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.todolist.R
+import com.example.todolist.activities.TasksActivity.Companion
 import com.example.todolist.adapters.CategoryAdapter
 import com.example.todolist.data.entities.Category
 import com.example.todolist.data.entities.Task
@@ -25,6 +26,7 @@ class TaskActivity : AppCompatActivity() {
 
     companion object {
         const val EXTRA_TASK_ID = "TASK_ID"
+        const val EXTRA_CATEGORY_ID = "CATEGORY_ID"
     }
 
     lateinit var binding: ActivityTaskBinding
@@ -35,10 +37,10 @@ class TaskActivity : AppCompatActivity() {
     lateinit var calendar: Calendar
 
     lateinit var categoryDAO: CategoryDAO
-    var categoryList: MutableList<Category> = mutableListOf()
+    //var categoryList: MutableList<Category> = mutableListOf()
     lateinit var category: Category
 
-    lateinit var categoryAdapter: CategoryAdapter
+    //lateinit var categoryAdapter: CategoryAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,17 +58,21 @@ class TaskActivity : AppCompatActivity() {
         categoryDAO = CategoryDAO(this)
         taskDAO = TaskDAO(this)
 
-        categoryList = categoryDAO.findAll().toMutableList()
+        //categoryList = categoryDAO.findAll().toMutableList()
 
         // Si nos pasan un id es que queremos editar una tarea existente
         val id = intent.getLongExtra(EXTRA_TASK_ID, -1L)
+        val categoryId = intent.getLongExtra(EXTRA_CATEGORY_ID, -1)
+        if (categoryId != -1L) {
+            category = categoryDAO.findById(categoryId)!!
+        }
         if (id != -1L) {
             isEditing = true
             task = taskDAO.findById(id)!!
             category = task.category
         } else {
             isEditing = false
-            category = categoryList.first()
+            category = category
             task = Task(-1, "", category = category)
         }
 
@@ -119,7 +125,7 @@ class TaskActivity : AppCompatActivity() {
             saveTask()
         }
 
-        val categoryNew = Category(-1, getString(R.string.new_category), R.color.md_theme_secondary, R.drawable.ic_add)
+        /*val categoryNew = Category(-1, getString(R.string.new_category), R.color.md_theme_secondary, R.drawable.ic_add)
         categoryList.add(categoryNew)
         categoryAdapter = CategoryAdapter(categoryList, { position ->
             if (position == categoryList.lastIndex) {
@@ -135,7 +141,7 @@ class TaskActivity : AppCompatActivity() {
                 true
             }
         })
-        binding.categoryRecyclerView.adapter = categoryAdapter
+        binding.categoryRecyclerView.adapter = categoryAdapter*/
     }
 
     private fun loadData() {

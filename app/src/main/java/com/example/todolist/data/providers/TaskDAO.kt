@@ -8,6 +8,7 @@ import android.util.Log
 import com.example.todolist.data.entities.Category
 import com.example.todolist.data.entities.Task
 import com.example.todolist.utils.DatabaseManager
+import java.util.Calendar
 
 class TaskDAO(val context: Context) {
 
@@ -177,7 +178,79 @@ class TaskDAO(val context: Context) {
         return list
     }
 
-    fun countByCategoryAndDone(category: Category): Int {
+    fun findAllByDate(date: Calendar) : List<Task> {
+        return findAllBy("${Task.COLUMN_NAME_DATE} = ${date.timeInMillis}")
+    }
+
+    fun findAllByReminder() : List<Task> {
+        return findAllBy("${Task.COLUMN_NAME_REMINDER} = true")
+    }
+
+    fun findAllByPriority() : List<Task> {
+        return findAllBy("${Task.COLUMN_NAME_PRIORITY} > 0")
+    }
+
+    fun findAllByDone() : List<Task> {
+        return findAllBy("${Task.COLUMN_NAME_DONE} = true")
+    }
+
+    fun findAllBy(where: String?) : List<Task> {
+        open()
+
+        var list: MutableList<Task> = mutableListOf()
+
+        try {
+            val cursor = db.query(
+                Task.TABLE_NAME,                    // The table to query
+                Task.COLUMN_NAMES,                  // The array of columns to return (pass null to get all)
+                where,                       // The columns for the WHERE clause
+                null,                   // The values for the WHERE clause
+                null,                       // don't group the rows
+                null,                         // don't filter by row groups
+                "${Task.COLUMN_NAME_DONE}, ${Task.COLUMN_NAME_DATE}, ${Task.COLUMN_NAME_TIME}"                        // The sort order
+            )
+
+            while (cursor.moveToNext()) {
+                val task = cursorToEntity(cursor)
+                list.add(task)
+            }
+        } catch (e: Exception) {
+            Log.e("DB", e.stackTraceToString())
+        } finally {
+            close()
+        }
+        return list
+    }
+
+    fun countAll(): Int {
+        return countBy(null)
+    }
+
+    fun countByCategory(category: Category): Int {
+        return countBy("${Task.COLUMN_NAME_CATEGORY} = ${category.id}")
+    }
+
+    fun countByCategoryAndDone(category: Category, done: Boolean): Int {
+        return countBy("${Task.COLUMN_NAME_CATEGORY} = ${category.id} AND ${Task.COLUMN_NAME_DONE} = $done")
+    }
+
+    fun countByPriority(): Int {
+        return countBy("${Task.COLUMN_NAME_PRIORITY} > 0")
+    }
+
+    fun countByReminder(): Int {
+        return countBy("${Task.COLUMN_NAME_REMINDER} = true")
+    }
+
+    fun countByDone(): Int {
+        return countBy("${Task.COLUMN_NAME_DONE} = true")
+    }
+
+    fun countByDate(date: Calendar): Int {
+        return countBy("${Task.COLUMN_NAME_DATE} = ${date.timeInMillis}")
+    }
+
+    fun countBy(where: String?): Int {
         open()
 
         var count = 0
@@ -186,7 +259,7 @@ class TaskDAO(val context: Context) {
             val cursor = db.query(
                 Task.TABLE_NAME,                 // The table to query
                 arrayOf("COUNT(*)"),     // The array of columns to return (pass null to get all)
-                "${Task.COLUMN_NAME_CATEGORY} = ${category.id} AND ${Task.COLUMN_NAME_DONE} = false",                // The columns for the WHERE clause
+                where,                // The columns for the WHERE clause
                 null,          // The values for the WHERE clause
                 null,                   // don't group the rows
                 null,                   // don't filter by row groups

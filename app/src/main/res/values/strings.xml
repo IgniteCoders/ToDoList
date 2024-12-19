@@ -47,8 +47,12 @@
     <string name="action_uncheck">UNCHECK</string>
 
     <!-- Category filters -->
-    <string name="new_category">New</string>
-    <string name="all_category">All</string>
+    <string name="filter_today">Today</string>
+    <string name="filter_scheduled">Scheduled</string>
+    <string name="filter_all">All</string>
+    <string name="filter_priority">With priority</string>
+    <string name="filter_completed">Completed</string>
+    <string name="filter_new">New category</string>
 
     <!-- CategoryActivity field labels -->
     <string name="label_category_title">Category…</string>

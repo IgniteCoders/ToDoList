@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.todolist.R
 import com.example.todolist.adapters.CategoryAdapter
 import com.example.todolist.data.entities.Category
@@ -45,10 +46,13 @@ class MainActivity : AppCompatActivity() {
         }, {
             editCategory(it)
             true
+        }, {
+            onFilterClick(it)
         })
 
         binding.recyclerView.adapter = adapter
-        binding.recyclerView.layoutManager = GridLayoutManager(this, 2)
+        //binding.recyclerView.layoutManager = GridLayoutManager(this, 2)
+        binding.recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
         initViews()
     }
@@ -81,5 +85,16 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, CategoryActivity::class.java)
         intent.putExtra(CategoryActivity.EXTRA_CATEGORY_ID, category.id)
         startActivity(intent)
+    }
+
+    private fun onFilterClick(filter: Int) {
+        if (filter == CategoryAdapter.FILTER_NEW) {
+            val intent = Intent(this, CategoryActivity::class.java)
+            startActivity(intent)
+        } else {
+            val intent = Intent(this, TasksActivity::class.java)
+            intent.putExtra(TasksActivity.EXTRA_FILTER, filter)
+            startActivity(intent)
+        }
     }
 }

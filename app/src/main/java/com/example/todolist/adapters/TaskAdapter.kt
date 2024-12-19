@@ -76,7 +76,11 @@ class TaskAdapter(
                 1, 2 -> binding.priorityImageView.visibility = View.VISIBLE
             }
 
+            binding.dateTextView.visibility = View.GONE
+
             task.getCalendar()?.let { calendar ->
+                binding.dateTextView.visibility = View.VISIBLE
+
                 var dateText = if (calendar.isToday()) {
                     context.getString(R.string.calendar_today)
                 } else if (calendar.isTomorrow()) {

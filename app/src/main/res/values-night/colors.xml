@@ -143,6 +143,4 @@
     <color name="md_theme_surfaceContainerHighest_highContrast">#313539</color>
 
     <color name="background">#323234</color>
-
-    <color name="cell_background">#191919</color>
 </resources>

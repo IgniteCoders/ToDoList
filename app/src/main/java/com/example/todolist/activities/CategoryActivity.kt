@@ -107,7 +107,7 @@ class CategoryActivity : AppCompatActivity() {
         } else {
             binding.titleTextField.error = null
         }
-        if (category.name.length > 50) {
+        if (category.name.length > 20) {
             binding.titleTextField.error = getString(R.string.field_error_category_title_too_long)
             return false
         } else {

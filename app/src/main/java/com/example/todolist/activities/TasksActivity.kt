@@ -19,6 +19,7 @@ import com.example.todolist.data.providers.CategoryDAO
 import com.example.todolist.data.providers.TaskDAO
 import com.example.todolist.databinding.ActivityTasksBinding
 import com.example.todolist.utils.getFormattedDate
+import com.example.todolist.utils.removeTime
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import java.text.DateFormat
@@ -29,6 +30,7 @@ class TasksActivity : AppCompatActivity() {
 
     companion object {
         const val EXTRA_CATEGORY_ID = "CATEGORY_ID"
+        const val EXTRA_FILTER = "FILTER"
     }
 
     lateinit var binding: ActivityTasksBinding
@@ -40,6 +42,7 @@ class TasksActivity : AppCompatActivity() {
 
     lateinit var categoryDAO: CategoryDAO
     var category: Category? = null
+    var filter: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,6 +66,8 @@ class TasksActivity : AppCompatActivity() {
             category = categoryDAO.findById(categoryId)
         }
 
+        filter = intent.getIntExtra(EXTRA_FILTER, -1)
+
         initViews()
 
         //loadData()
@@ -81,6 +86,7 @@ class TasksActivity : AppCompatActivity() {
         // Crear tarea
         binding.addTaskButton.setOnClickListener {
             val intent = Intent(this, TaskActivity::class.java)
+            intent.putExtra(TaskActivity.EXTRA_CATEGORY_ID, category?.id)
             startActivity(intent)
         }
 
@@ -90,10 +96,23 @@ class TasksActivity : AppCompatActivity() {
     }
 
     private fun loadData() {
-        if (category != null) {
-            taskList = taskDAO.findAllByCategory(category!!).toMutableList()
+        if (filter != -1) {
+            when (filter) {
+                CategoryAdapter.FILTER_TODAY        -> taskList = taskDAO.findAllByDate(Calendar.getInstance().removeTime()).toMutableList()
+                CategoryAdapter.FILTER_SCHEDULED    -> taskList = taskDAO.findAllByReminder().toMutableList()
+                CategoryAdapter.FILTER_ALL          -> taskList = taskDAO.findAll().toMutableList()
+                CategoryAdapter.FILTER_PRIORITY     -> taskList = taskDAO.findAllByPriority().toMutableList()
+                CategoryAdapter.FILTER_DONE         -> taskList = taskDAO.findAllByDone().toMutableList()
+            }
         } else {
-            taskList = taskDAO.findAll().toMutableList()
+            if (category != null) {
+                taskList = taskDAO.findAllByCategory(category!!).toMutableList()
+                binding.titleTextView.text = category!!.name
+                binding.colorCardView.setCardBackgroundColor(category!!.color)
+                binding.iconImageView.setImageResource(category!!.icon)
+            } else {
+                taskList = taskDAO.findAll().toMutableList()
+            }
         }
         adapter.updateItems(taskList)
     }

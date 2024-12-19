@@ -77,7 +77,7 @@
                 android:id="@+id/iconImageView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="2dp"
+                android:layout_margin="12dp"
                 android:src="@drawable/ic_clock"
                 app:tint="@color/white"/>
 
@@ -92,7 +92,7 @@
             app:startIconDrawable="@drawable/ic_edit"
             android:layout_marginTop="16dp"
             app:counterEnabled="true"
-            app:counterMaxLength="50">
+            app:counterMaxLength="20">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"

@@ -24,14 +24,18 @@ data class Category (
         )
 
         val colors = arrayOf(
-            Color.RED,
-            Color.GREEN,
-            Color.BLUE,
-            Color.YELLOW,
-            Color.CYAN,
-            Color.MAGENTA,
-            Color.BLACK,
-            Color.WHITE
+            Color.parseColor("#fe453a"),
+            Color.parseColor("#ff9e0b"),
+            Color.parseColor("#ffd50b"),
+            Color.parseColor("#2fd05b"),
+            Color.parseColor("#79c3fe"),
+            Color.parseColor("#0b84fd"),
+            Color.parseColor("#5d5be5"),
+            Color.parseColor("#fe4f79"),
+            Color.parseColor("#d57ff4"),
+            Color.parseColor("#c8a576"),
+            Color.parseColor("#757e86"),
+            Color.parseColor("#ebb5ae")
         )
 
         val icons = arrayOf(
