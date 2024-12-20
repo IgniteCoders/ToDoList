@@ -2,10 +2,14 @@ package com.example.todolist.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.search.SearchBar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.todolist.R
@@ -64,13 +68,31 @@ class MainActivity : AppCompatActivity() {
         adapter.updateItems(categoryList)
     }
 
+    /*override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_activity_main, menu)
+        initSearchView(menu?.findItem(R.id.menu_search))
+        return false
+    }
+
+    private fun initSearchView(searchItem: MenuItem?) {
+        if (searchItem != null) {
+            var searchView = searchItem.actionView as SearchBar
+
+            searchView.textView.addTextChangedListener {
+                println(searchView.textView.text.toString())
+            }
+        }
+    }*/
+
     private fun initViews() {
-        binding.addCategoryButton.setOnClickListener {
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.title ="Hola"
+        supportActionBar?.subtitle = Calendar.getInstance().getFormattedDate(DateFormat.LONG)
+
+        /*binding.addCategoryButton.setOnClickListener {
             val intent = Intent(this, CategoryActivity::class.java)
             startActivity(intent)
-        }
-
-        binding.dateTextView.text = Calendar.getInstance().getFormattedDate(DateFormat.LONG)
+        }*/
     }
 
     private fun showCategory(position: Int) {
