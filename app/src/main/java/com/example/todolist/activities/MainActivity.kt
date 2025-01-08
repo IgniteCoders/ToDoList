@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
             insets
         }
 
@@ -86,13 +86,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun initViews() {
         setSupportActionBar(binding.toolbar)
-        supportActionBar?.title ="Hola"
+        supportActionBar?.title = getString(R.string.app_name)
         supportActionBar?.subtitle = Calendar.getInstance().getFormattedDate(DateFormat.LONG)
-
-        /*binding.addCategoryButton.setOnClickListener {
-            val intent = Intent(this, CategoryActivity::class.java)
-            startActivity(intent)
-        }*/
     }
 
     private fun showCategory(position: Int) {

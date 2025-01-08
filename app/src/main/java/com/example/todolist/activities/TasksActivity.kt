@@ -54,7 +54,7 @@ class TasksActivity : AppCompatActivity() {
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
             insets
         }
 
@@ -97,13 +97,39 @@ class TasksActivity : AppCompatActivity() {
 
     private fun loadData() {
         if (filter != -1) {
+            var title = getString(R.string.activity_tasks_title)
+            var color = getColor(R.color.md_theme_onPrimaryContainer)
+            var icon = R.drawable.ic_inbox
             when (filter) {
-                CategoryAdapter.FILTER_TODAY        -> taskList = taskDAO.findAllByDate(Calendar.getInstance().removeTime()).toMutableList()
-                CategoryAdapter.FILTER_SCHEDULED    -> taskList = taskDAO.findAllByReminder().toMutableList()
-                CategoryAdapter.FILTER_ALL          -> taskList = taskDAO.findAll().toMutableList()
-                CategoryAdapter.FILTER_PRIORITY     -> taskList = taskDAO.findAllByPriority().toMutableList()
-                CategoryAdapter.FILTER_DONE         -> taskList = taskDAO.findAllByDone().toMutableList()
+                CategoryAdapter.FILTER_TODAY        -> {
+                    taskList = taskDAO.findAllByDate(Calendar.getInstance().removeTime()).toMutableList()
+                    title = getString(R.string.filter_today)
+                    icon = R.drawable.ic_calendar
+                }
+                CategoryAdapter.FILTER_SCHEDULED    -> {
+                    taskList = taskDAO.findAllByReminder().toMutableList()
+                    title = getString(R.string.filter_scheduled)
+                    icon = R.drawable.ic_clock
+                }
+                CategoryAdapter.FILTER_ALL          -> {
+                    taskList = taskDAO.findAll().toMutableList()
+                    title = getString(R.string.filter_all)
+                    icon = R.drawable.ic_inbox
+                }
+                CategoryAdapter.FILTER_PRIORITY     -> {
+                    taskList = taskDAO.findAllByPriority().toMutableList()
+                    title = getString(R.string.filter_priority)
+                    icon = R.drawable.ic_priority
+                }
+                CategoryAdapter.FILTER_DONE         -> {
+                    taskList = taskDAO.findAllByDone().toMutableList()
+                    title = getString(R.string.filter_completed)
+                    icon = R.drawable.ic_completed
+                }
             }
+            binding.titleTextView.text = title
+            binding.colorCardView.setCardBackgroundColor(color)
+            binding.iconImageView.setImageResource(icon)
         } else {
             if (category != null) {
                 taskList = taskDAO.findAllByCategory(category!!).toMutableList()
@@ -152,7 +178,7 @@ class TasksActivity : AppCompatActivity() {
                     val rightTextRes = if (isChecked) R.string.action_uncheck else R.string.action_check
                     val whiteColor = getColor(R.color.white)
 
-                    val swipeDecoratorBuilder = RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                    RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
 
                         // Swipe left action
                         .addSwipeLeftLabel(getString(R.string.action_delete))

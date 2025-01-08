@@ -5,7 +5,6 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
     android:fitsSystemWindows="true"
     tools:context=".activities.MainActivity">
 
@@ -13,18 +12,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.google.android.material.search.SearchBar
-            android:id="@+id/searchBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_collapseMode="pin"
-            app:layout_scrollFlags="scroll|enterAlwaysCollapsed"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
-
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            app:title="@string/app_name"
+            tools:subtitle="January 1, 2025"
+            app:titleCentered="true"
+            app:subtitleCentered="true"
+            app:layout_collapseMode="pin"
+            app:layout_scrollFlags="scroll|enterAlwaysCollapsed"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
+        <com.google.android.material.search.SearchBar
+            android:id="@+id/searchBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/action_search"
             app:layout_collapseMode="pin"
             app:layout_scrollFlags="snap"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
@@ -41,6 +45,8 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingBottom="32dp"
+        android:clipToPadding="false"
         tools:listitem="@layout/item_category"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 

@@ -148,7 +148,7 @@
     <color name="transparent">#00FFFFFF</color>
     <color name="gray">#7B7B7B</color>
 
-    <color name="background">#F1F4F9</color>
+    <color name="background_old">#F1F4F9</color>
 
     <color name="delete">#E91E47</color>
 

@@ -5,7 +5,6 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
     tools:context=".activities.TaskActivity">
 
     <!-- Background -->
@@ -55,7 +54,7 @@
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/background"
+        android:background="?android:colorBackground"
         android:orientation="vertical"
         android:padding="16dp"
         app:layout_constraintBottom_toTopOf="@id/saveButton"
