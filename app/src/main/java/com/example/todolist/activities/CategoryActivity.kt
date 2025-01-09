@@ -1,6 +1,7 @@
 package com.example.todolist.activities
 
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -53,15 +54,30 @@ class CategoryActivity : AppCompatActivity() {
             category = Category(-1, "", Category.colors[0], Category.icons[0])
         }
 
-
         initViews()
 
         loadData()
+    }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun initViews() {
-        binding.closeButton.setOnClickListener { finish() }
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        supportActionBar?.title = if (isEditing) {
+            getString(R.string.activity_category_title_edit)
+        } else {
+            getString(R.string.activity_category_title_create)
+        }
 
         colorAdapter = ColorAdapter(Category.colors, Category.colors.indexOf(category.color)) {
             category.color = Category.colors[it]
@@ -83,12 +99,6 @@ class CategoryActivity : AppCompatActivity() {
     }
 
     private fun loadData() {
-        binding.titleTextView.text = if (isEditing) {
-            getString(R.string.activity_category_title_edit)
-        } else {
-            getString(R.string.activity_category_title_create)
-        }
-
         binding.titleTextField.editText?.setText(category.name)
 
         loadColorAndIcon()

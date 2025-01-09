@@ -4,7 +4,9 @@ import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
 import android.app.TimePickerDialog
 import android.app.TimePickerDialog.OnTimeSetListener
+import android.content.res.ColorStateList
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -19,6 +21,7 @@ import com.example.todolist.data.providers.TaskDAO
 import com.example.todolist.databinding.ActivityTaskBinding
 import com.example.todolist.utils.getFormattedDate
 import com.example.todolist.utils.getFormattedTime
+import java.text.DateFormat
 import java.util.Calendar
 
 
@@ -82,10 +85,27 @@ class TaskActivity : AppCompatActivity() {
         loadData()
     }
 
-    private fun initViews() {
-        //binding.titleTextField.requestFocus()
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
 
-        binding.closeButton.setOnClickListener { finish() }
+    private fun initViews() {
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        supportActionBar?.title = if (isEditing) {
+            getString(R.string.activity_task_title_edit)
+        } else {
+            getString(R.string.activity_task_title_create)
+        }
+
+        //binding.titleTextField.requestFocus()
 
         binding.reminderSwitch.setOnCheckedChangeListener { _, isChecked ->
             binding.allDaySwitch.isEnabled = isChecked
@@ -145,12 +165,6 @@ class TaskActivity : AppCompatActivity() {
     }
 
     private fun loadData() {
-        binding.titleTextView.text = if (isEditing) {
-            getString(R.string.activity_task_title_edit)
-        } else {
-            getString(R.string.activity_task_title_create)
-        }
-
         binding.titleTextField.editText?.setText(task.title)
         binding.descriptionTextField.editText?.setText(task.description)
         binding.reminderSwitch.isChecked = task.reminder
@@ -164,6 +178,10 @@ class TaskActivity : AppCompatActivity() {
         }
         setDate(calendar)
         setTime(calendar)
+
+        binding.categoryChip.text = category.name
+        binding.categoryChip.setChipIconResource(category.icon)
+        binding.categoryChip.chipBackgroundColor = ColorStateList.valueOf(category.color)
     }
 
     private fun setPriority() {

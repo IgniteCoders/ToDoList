@@ -3,6 +3,7 @@ package com.example.todolist.activities
 import android.content.Intent
 import android.graphics.Canvas
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -54,7 +55,7 @@ class TasksActivity : AppCompatActivity() {
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
@@ -74,6 +75,10 @@ class TasksActivity : AppCompatActivity() {
     }
 
     private fun initViews() {
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.subtitle = Calendar.getInstance().getFormattedDate(DateFormat.LONG)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         adapter = TaskAdapter(taskList,
             { showTask(it) },
             { checkTask(it) },
@@ -90,7 +95,7 @@ class TasksActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        binding.dateTextView.text = Calendar.getInstance().getFormattedDate(DateFormat.LONG)
+        //binding.dateTextView.text = Calendar.getInstance().getFormattedDate(DateFormat.LONG)
 
         configureGestures()
     }
@@ -98,7 +103,7 @@ class TasksActivity : AppCompatActivity() {
     private fun loadData() {
         if (filter != -1) {
             var title = getString(R.string.activity_tasks_title)
-            var color = getColor(R.color.md_theme_onPrimaryContainer)
+            var color = getColor(R.color.md_theme_primary)
             var icon = R.drawable.ic_inbox
             when (filter) {
                 CategoryAdapter.FILTER_TODAY        -> {
@@ -127,13 +132,13 @@ class TasksActivity : AppCompatActivity() {
                     icon = R.drawable.ic_completed
                 }
             }
-            binding.titleTextView.text = title
+            supportActionBar?.title = title
             binding.colorCardView.setCardBackgroundColor(color)
             binding.iconImageView.setImageResource(icon)
         } else {
             if (category != null) {
                 taskList = taskDAO.findAllByCategory(category!!).toMutableList()
-                binding.titleTextView.text = category!!.name
+                supportActionBar?.title = category!!.name
                 binding.colorCardView.setCardBackgroundColor(category!!.color)
                 binding.iconImageView.setImageResource(category!!.icon)
             } else {
@@ -148,6 +153,16 @@ class TasksActivity : AppCompatActivity() {
 
         // Cargamos la lista por si se hubiera añadido una tarea nueva
         loadData()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun configureGestures() {
