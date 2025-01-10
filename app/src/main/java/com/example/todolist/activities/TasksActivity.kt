@@ -21,6 +21,7 @@ import com.example.todolist.data.providers.TaskDAO
 import com.example.todolist.databinding.ActivityTasksBinding
 import com.example.todolist.utils.getFormattedDate
 import com.example.todolist.utils.removeTime
+import com.example.todolist.utils.setWindowInsets
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import java.text.DateFormat
@@ -53,11 +54,8 @@ class TasksActivity : AppCompatActivity() {
 
         setContentView(binding.root)
 
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+        setWindowInsets(binding.root)
+        binding.addTaskButton.setWindowInsets()
 
         categoryDAO = CategoryDAO(this)
         taskDAO = TaskDAO(this)

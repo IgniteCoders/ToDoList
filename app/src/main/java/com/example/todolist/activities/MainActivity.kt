@@ -2,22 +2,21 @@ package com.example.todolist.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.search.SearchBar
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.addTextChangedListener
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.todolist.R
 import com.example.todolist.adapters.CategoryAdapter
+import com.example.todolist.adapters.TaskAdapter
 import com.example.todolist.data.entities.Category
+import com.example.todolist.data.entities.Task
 import com.example.todolist.data.providers.CategoryDAO
+import com.example.todolist.data.providers.TaskDAO
 import com.example.todolist.databinding.ActivityMainBinding
 import com.example.todolist.utils.getFormattedDate
+import com.example.todolist.utils.setWindowInsets
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.text.DateFormat
 import java.util.Calendar
 
@@ -26,9 +25,13 @@ class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
 
     lateinit var adapter: CategoryAdapter
+    lateinit var searchAdapter: TaskAdapter
 
     lateinit var categoryDAO: CategoryDAO
     var categoryList: MutableList<Category> = mutableListOf()
+
+    lateinit var taskDAO: TaskDAO
+    var taskList: MutableList<Task> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,13 +41,31 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
-            insets
-        }
+        //setWindowInsets(binding.root)
+        binding.addTaskButton.setWindowInsets()
 
         categoryDAO = CategoryDAO(this)
+        taskDAO = TaskDAO(this)
+
+        initViews()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        categoryList = categoryDAO.findAll().toMutableList()
+        adapter.updateItems(categoryList)
+
+        if (binding.searchView.isShowing) {
+            loadSearchData()
+        }
+    }
+
+    private fun initViews() {
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.title = getString(R.string.app_name)
+        supportActionBar?.subtitle = Calendar.getInstance().getFormattedDate(DateFormat.LONG)
+
         adapter = CategoryAdapter(categoryList, {
             showCategory(it)
         }, {
@@ -55,39 +76,27 @@ class MainActivity : AppCompatActivity() {
         })
 
         binding.recyclerView.adapter = adapter
-        //binding.recyclerView.layoutManager = GridLayoutManager(this, 2)
         binding.recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
-        initViews()
-    }
+        searchAdapter = TaskAdapter(taskList,
+            { showTask(it) },
+            { checkTask(it) },
+            { deleteTask(it) }
+        )
+        binding.searchRecyclerView.adapter = searchAdapter
+        binding.searchRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
-    override fun onResume() {
-        super.onResume()
-
-        categoryList = categoryDAO.findAll().toMutableList()
-        adapter.updateItems(categoryList)
-    }
-
-    /*override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_activity_main, menu)
-        initSearchView(menu?.findItem(R.id.menu_search))
-        return false
-    }
-
-    private fun initSearchView(searchItem: MenuItem?) {
-        if (searchItem != null) {
-            var searchView = searchItem.actionView as SearchBar
-
-            searchView.textView.addTextChangedListener {
-                println(searchView.textView.text.toString())
-            }
+        binding.searchView.editText.addTextChangedListener {
+            loadSearchData()
         }
-    }*/
 
-    private fun initViews() {
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.title = getString(R.string.app_name)
-        supportActionBar?.subtitle = Calendar.getInstance().getFormattedDate(DateFormat.LONG)
+        /*binding.searchView
+            .editText
+            .setOnEditorActionListener { v, actionId, event ->
+                val results = TaskDAO(this).findAllByTitle(binding.searchView.text.toString())
+                searchAdapter.updateItems(results)
+                false
+            };*/
     }
 
     private fun showCategory(position: Int) {
@@ -113,5 +122,48 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra(TasksActivity.EXTRA_FILTER, filter)
             startActivity(intent)
         }
+    }
+
+    private fun loadSearchData() {
+        taskList = taskDAO.findAllByTitle(binding.searchView.text.toString()).toMutableList()
+        searchAdapter.updateItems(taskList)
+    }
+
+    // Funcion para cuando marcamos una tarea (finalizada/pendiente)
+    private fun checkTask(position: Int) {
+        val task = taskList[position]
+        task.done = !task.done
+        taskDAO.update(task)
+        adapter.notifyItemChanged(position)
+        loadSearchData()
+    }
+
+    // Funciona para mostrar un dialogo para borrar la tarea
+    private fun deleteTask(position: Int) {
+        val task = taskList[position]
+        // Mostramos un dialogo para asegurarnos de que el usuario quiere borrar la tarea
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.alert_dialog_delete_title)
+            .setMessage(R.string.alert_dialog_delete_message)
+            .setPositiveButton(android.R.string.ok) { dialog, _ ->
+                // Borramos la tarea en caso de pulsar el boton OK
+                taskDAO.delete(task)
+                loadSearchData()
+                dialog.dismiss()
+            }
+            .setNegativeButton(android.R.string.cancel) { dialog, _ ->
+                adapter.notifyItemChanged(position)
+                dialog.dismiss()
+            }
+            .setIcon(R.drawable.ic_delete)
+            .show()
+    }
+
+    // Mostramos la tarea para editarla
+    private fun showTask(position: Int) {
+        val task = taskList[position]
+        val intent = Intent(this, TaskActivity::class.java)
+        intent.putExtra(TaskActivity.EXTRA_TASK_ID, task.id)
+        startActivity(intent)
     }
 }

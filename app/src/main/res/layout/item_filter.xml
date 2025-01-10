@@ -332,7 +332,7 @@
                     <ImageView
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/ic_add"
+                        android:src="@drawable/ic_add_list"
                         app:tint="@color/md_theme_primary" />
 
                     <Space

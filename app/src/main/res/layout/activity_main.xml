@@ -5,17 +5,17 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     tools:context=".activities.MainActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="128dp"
             app:title="@string/app_name"
             tools:subtitle="January 1, 2025"
             app:titleCentered="true"
@@ -29,37 +29,46 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/action_search"
+            app:iconifiedByDefault="false"
             app:layout_collapseMode="pin"
             app:layout_scrollFlags="snap"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <com.google.android.material.search.SearchView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_anchor="@id/searchBar">
-    </com.google.android.material.search.SearchView>
-
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="32dp"
+        android:paddingBottom="128dp"
         android:clipToPadding="false"
         tools:listitem="@layout/item_category"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
-
-    <!--<com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/addCategoryButton"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addTaskButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
+        app:layout_anchor="@id/recyclerView"
+        app:layout_anchorGravity="bottom|end"
         android:contentDescription="@string/activity_task_title_create"
-        android:src="@drawable/ic_add"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:visibility="gone"/>-->
+        android:src="@drawable/ic_add"/>
+
+    <com.google.android.material.search.SearchView
+        android:id="@+id/searchView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:hint="@string/action_search"
+        app:layout_anchor="@id/searchBar">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/searchRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="64dp"
+            android:clipToPadding="false"
+            tools:listitem="@layout/item_task"/>
+
+    </com.google.android.material.search.SearchView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

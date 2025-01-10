@@ -21,6 +21,7 @@ import com.example.todolist.data.providers.TaskDAO
 import com.example.todolist.databinding.ActivityTaskBinding
 import com.example.todolist.utils.getFormattedDate
 import com.example.todolist.utils.getFormattedTime
+import com.example.todolist.utils.setWindowInsets
 import java.text.DateFormat
 import java.util.Calendar
 
@@ -52,11 +53,7 @@ class TaskActivity : AppCompatActivity() {
         binding = ActivityTaskBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+        setWindowInsets(binding.root)
 
         categoryDAO = CategoryDAO(this)
         taskDAO = TaskDAO(this)

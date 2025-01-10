@@ -13,6 +13,7 @@ import com.example.todolist.adapters.IconAdapter
 import com.example.todolist.data.entities.Category
 import com.example.todolist.data.providers.CategoryDAO
 import com.example.todolist.databinding.ActivityCategoryBinding
+import com.example.todolist.utils.setWindowInsets
 
 class CategoryActivity : AppCompatActivity() {
 
@@ -36,11 +37,7 @@ class CategoryActivity : AppCompatActivity() {
         binding = ActivityCategoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+        setWindowInsets(binding.root)
 
         categoryDAO = CategoryDAO(this)
 

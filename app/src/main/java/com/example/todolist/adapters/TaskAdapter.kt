@@ -57,8 +57,6 @@ class TaskAdapter(
         diffResult.dispatchUpdatesTo(this)
     }
 
-
-
     class ViewHolder(val binding: ItemTaskBinding) : RecyclerView.ViewHolder(binding.root) {
 
         private val context = binding.root.context
@@ -95,7 +93,7 @@ class TaskAdapter(
                 }
                 binding.dateTextView.text = dateText
 
-                if (calendar.isBeforeToday()) {
+                if (calendar.isBeforeToday() && !task.done) {
                     binding.dateTextView.setTextColor(context.getColor(R.color.expired_date))
                 } else {
                     binding.dateTextView.setTextColor(context.getColor(R.color.gray))

@@ -123,63 +123,19 @@ class TaskDAO(val context: Context) {
     }
 
     fun findAll() : List<Task> {
-        open()
+        return findAllBy(null)
+    }
 
-        var list: MutableList<Task> = mutableListOf()
-
-        try {
-            val cursor = db.query(
-                Task.TABLE_NAME,                    // The table to query
-                Task.COLUMN_NAMES,                  // The array of columns to return (pass null to get all)
-                null,                       // The columns for the WHERE clause
-                null,                   // The values for the WHERE clause
-                null,                       // don't group the rows
-                null,                         // don't filter by row groups
-                "${Task.COLUMN_NAME_DONE}, ${Task.COLUMN_NAME_DATE}, ${Task.COLUMN_NAME_TIME}"                        // The sort order
-            )
-
-            while (cursor.moveToNext()) {
-                val task = cursorToEntity(cursor)
-                list.add(task)
-            }
-        } catch (e: Exception) {
-            Log.e("DB", e.stackTraceToString())
-        } finally {
-            close()
-        }
-        return list
+    fun findAllByTitle(title: String) : List<Task> {
+        return findAllBy("${Task.COLUMN_NAME_TITLE} LIKE '%$title%'")
     }
 
     fun findAllByCategory(category: Category) : List<Task> {
-        open()
-
-        var list: MutableList<Task> = mutableListOf()
-
-        try {
-            val cursor = db.query(
-                Task.TABLE_NAME,                    // The table to query
-                Task.COLUMN_NAMES,                  // The array of columns to return (pass null to get all)
-                "${Task.COLUMN_NAME_CATEGORY} = ${category.id}",                       // The columns for the WHERE clause
-                null,                   // The values for the WHERE clause
-                null,                       // don't group the rows
-                null,                         // don't filter by row groups
-                "${Task.COLUMN_NAME_DONE}, ${Task.COLUMN_NAME_DATE}, ${Task.COLUMN_NAME_TIME}"                        // The sort order
-            )
-
-            while (cursor.moveToNext()) {
-                val task = cursorToEntity(cursor)
-                list.add(task)
-            }
-        } catch (e: Exception) {
-            Log.e("DB", e.stackTraceToString())
-        } finally {
-            close()
-        }
-        return list
+        return findAllBy("${Task.COLUMN_NAME_CATEGORY} = ${category.id}")
     }
 
     fun findAllByDate(date: Calendar) : List<Task> {
-        return findAllBy("${Task.COLUMN_NAME_DATE} = ${date.timeInMillis}")
+        return findAllBy("${Task.COLUMN_NAME_REMINDER} = true AND ${Task.COLUMN_NAME_DATE} = ${date.timeInMillis}")
     }
 
     fun findAllByReminder() : List<Task> {
@@ -247,7 +203,7 @@ class TaskDAO(val context: Context) {
     }
 
     fun countByDate(date: Calendar): Int {
-        return countBy("${Task.COLUMN_NAME_DATE} = ${date.timeInMillis}")
+        return countBy("${Task.COLUMN_NAME_REMINDER} = true AND ${Task.COLUMN_NAME_DATE} = ${date.timeInMillis}")
     }
 
     fun countBy(where: String?): Int {
