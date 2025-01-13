@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -22,6 +23,7 @@ import com.example.todolist.databinding.ActivityTasksBinding
 import com.example.todolist.utils.getFormattedDate
 import com.example.todolist.utils.removeTime
 import com.example.todolist.utils.setWindowInsets
+import com.example.todolist.utils.toPx
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import java.text.DateFormat
@@ -55,7 +57,7 @@ class TasksActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setWindowInsets(binding.root)
-        binding.addTaskButton.setWindowInsets()
+        binding.addTaskButton.setWindowInsets(Insets.of(0, 0, 16.toPx(), 16.toPx()))
 
         categoryDAO = CategoryDAO(this)
         taskDAO = TaskDAO(this)
