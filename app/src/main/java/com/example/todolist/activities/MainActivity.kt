@@ -58,9 +58,12 @@ class MainActivity : AppCompatActivity() {
         categoryList = categoryDAO.findAll().toMutableList()
         adapter.updateItems(categoryList)
 
+        // Refresh search result when back to activity in case we changed something
         if (binding.searchView.isShowing) {
             loadSearchData()
         }
+
+        binding.addTaskButton.isEnabled = categoryList.isNotEmpty()
     }
 
     private fun initViews() {
@@ -92,13 +95,11 @@ class MainActivity : AppCompatActivity() {
             loadSearchData()
         }
 
-        /*binding.searchView
-            .editText
-            .setOnEditorActionListener { v, actionId, event ->
-                val results = TaskDAO(this).findAllByTitle(binding.searchView.text.toString())
-                searchAdapter.updateItems(results)
-                false
-            };*/
+        // Crear tarea
+        binding.addTaskButton.setOnClickListener {
+            val intent = Intent(this, TaskActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun showCategory(position: Int) {

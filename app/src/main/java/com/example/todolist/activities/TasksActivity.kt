@@ -56,7 +56,7 @@ class TasksActivity : AppCompatActivity() {
 
         setContentView(binding.root)
 
-        setWindowInsets(binding.root)
+        //setWindowInsets(binding.root)
         binding.addTaskButton.setWindowInsets(Insets.of(0, 0, 16.toPx(), 16.toPx()))
 
         categoryDAO = CategoryDAO(this)
@@ -95,7 +95,7 @@ class TasksActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        //binding.dateTextView.text = Calendar.getInstance().getFormattedDate(DateFormat.LONG)
+        binding.addTaskButton.isEnabled = categoryDAO.findAll().isNotEmpty()
 
         configureGestures()
     }
@@ -244,6 +244,9 @@ class TasksActivity : AppCompatActivity() {
             .setNegativeButton(android.R.string.cancel) { dialog, _ ->
                 adapter.notifyItemChanged(position)
                 dialog.dismiss()
+            }
+            .setOnCancelListener {
+                adapter.notifyItemChanged(position)
             }
             .setIcon(R.drawable.ic_delete)
             .show()

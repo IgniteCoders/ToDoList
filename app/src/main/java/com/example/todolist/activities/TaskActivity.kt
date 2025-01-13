@@ -53,7 +53,7 @@ class TaskActivity : AppCompatActivity() {
         binding = ActivityTaskBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setWindowInsets(binding.root)
+        //setWindowInsets(binding.root)
 
         categoryDAO = CategoryDAO(this)
         taskDAO = TaskDAO(this)
@@ -65,6 +65,8 @@ class TaskActivity : AppCompatActivity() {
         val categoryId = intent.getLongExtra(EXTRA_CATEGORY_ID, -1)
         if (categoryId != -1L) {
             category = categoryDAO.findById(categoryId)!!
+        } else {
+            category = categoryDAO.findAll().first()
         }
         if (id != -1L) {
             isEditing = true

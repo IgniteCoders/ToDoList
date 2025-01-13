@@ -37,7 +37,7 @@ class CategoryActivity : AppCompatActivity() {
         binding = ActivityCategoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setWindowInsets(binding.root)
+        //setWindowInsets(binding.root)
 
         categoryDAO = CategoryDAO(this)
 
