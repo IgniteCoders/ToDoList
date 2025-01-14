@@ -1,19 +1,12 @@
 package com.example.todolist.activities
 
-import android.app.DatePickerDialog
-import android.app.DatePickerDialog.OnDateSetListener
-import android.app.TimePickerDialog
-import android.app.TimePickerDialog.OnTimeSetListener
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.text.format.DateFormat
 import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.example.todolist.R
-import com.example.todolist.activities.TasksActivity.Companion
-import com.example.todolist.adapters.CategoryAdapter
 import com.example.todolist.data.entities.Category
 import com.example.todolist.data.entities.Task
 import com.example.todolist.data.providers.CategoryDAO
@@ -21,8 +14,9 @@ import com.example.todolist.data.providers.TaskDAO
 import com.example.todolist.databinding.ActivityTaskBinding
 import com.example.todolist.utils.getFormattedDate
 import com.example.todolist.utils.getFormattedTime
-import com.example.todolist.utils.setWindowInsets
-import java.text.DateFormat
+import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.timepicker.MaterialTimePicker
+import com.google.android.material.timepicker.TimeFormat
 import java.util.Calendar
 
 
@@ -197,34 +191,38 @@ class TaskActivity : AppCompatActivity() {
     }
 
     private fun datePickerDialog() {
-        val dateListener = OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-            calendar.set(Calendar.YEAR, year)
-            calendar.set(Calendar.MONTH, monthOfYear)
-            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+        val datePicker = MaterialDatePicker.Builder.datePicker()
+            .setSelection(calendar.timeInMillis)
+            .build()
+
+        datePicker.addOnPositiveButtonClickListener { selection ->
+            calendar.timeInMillis = selection
             setDate(calendar)
         }
-        DatePickerDialog(
-            this,
-            dateListener,
-            calendar.get(Calendar.YEAR),
-            calendar.get(Calendar.MONTH),
-            calendar.get(Calendar.DAY_OF_MONTH)
-        ).show()
+
+        datePicker.show(supportFragmentManager, datePicker.toString())
     }
 
     private fun timePickerDialog() {
-        val dateListener = OnTimeSetListener { view, hour, minute ->
+        val isSystem24Hour = DateFormat.is24HourFormat(this)
+
+        val timePicker = MaterialTimePicker.Builder()
+            .setTimeFormat(if (isSystem24Hour) TimeFormat.CLOCK_24H else TimeFormat.CLOCK_12H)
+            .setInputMode(MaterialTimePicker.INPUT_MODE_CLOCK)
+            .setHour(calendar.get(Calendar.HOUR_OF_DAY))
+            .setMinute(calendar.get(Calendar.MINUTE))
+            .build()
+
+        timePicker.addOnPositiveButtonClickListener {
+            val hour = timePicker.hour
+            val minute = timePicker.minute
+
             calendar.set(Calendar.HOUR_OF_DAY, hour)
             calendar.set(Calendar.MINUTE, minute)
             setTime(calendar)
         }
-        TimePickerDialog(
-            this,
-            dateListener,
-            calendar.get(Calendar.HOUR_OF_DAY),
-            calendar.get(Calendar.MINUTE),
-            true
-        ).show()
+
+        timePicker.show(supportFragmentManager, timePicker.toString())
     }
 
     private fun validateTask(): Boolean {
