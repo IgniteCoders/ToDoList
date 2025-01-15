@@ -19,6 +19,8 @@
     <string name="label_task_time">Time</string>
     <string name="label_task_description">Description…</string>
 
+    <string name="label_task_select_category">Select a category</string>
+
     <!-- TaskActivity field errors -->
     <string name="field_error_task_title_empty">Write something to do</string>
     <string name="field_error_task_title_too_long">Too much for a title</string>
@@ -60,7 +62,7 @@
     <string name="label_category_color">Color:</string>
     <string name="label_category_icon">Icon:</string>
 
-    <!-- AlertDialog category field errors -->
+    <!-- CategoryActivity field errors -->
     <string name="field_error_category_title_empty">Category name cannot be empty!</string>
     <string name="field_error_category_title_too_long">Category name too long!</string>
     <string name="add_category_success_message">Category added successfully</string>

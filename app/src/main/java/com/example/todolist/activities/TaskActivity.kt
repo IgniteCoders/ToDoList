@@ -12,6 +12,8 @@ import com.example.todolist.data.entities.Task
 import com.example.todolist.data.providers.CategoryDAO
 import com.example.todolist.data.providers.TaskDAO
 import com.example.todolist.databinding.ActivityTaskBinding
+import com.example.todolist.databinding.ItemCategoryChipBinding
+import com.example.todolist.utils.CategoryModalSheet
 import com.example.todolist.utils.getFormattedDate
 import com.example.todolist.utils.getFormattedTime
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -35,7 +37,7 @@ class TaskActivity : AppCompatActivity() {
     lateinit var calendar: Calendar
 
     lateinit var categoryDAO: CategoryDAO
-    //var categoryList: MutableList<Category> = mutableListOf()
+    var categoryList: MutableList<Category> = mutableListOf()
     lateinit var category: Category
 
     //lateinit var categoryAdapter: CategoryAdapter
@@ -52,7 +54,7 @@ class TaskActivity : AppCompatActivity() {
         categoryDAO = CategoryDAO(this)
         taskDAO = TaskDAO(this)
 
-        //categoryList = categoryDAO.findAll().toMutableList()
+        categoryList = categoryDAO.findAll().toMutableList()
 
         // Si nos pasan un id es que queremos editar una tarea existente
         val id = intent.getLongExtra(EXTRA_TASK_ID, -1L)
@@ -60,7 +62,7 @@ class TaskActivity : AppCompatActivity() {
         if (categoryId != -1L) {
             category = categoryDAO.findById(categoryId)!!
         } else {
-            category = categoryDAO.findAll().first()
+            category = categoryList.first()
         }
         if (id != -1L) {
             isEditing = true
@@ -138,23 +140,13 @@ class TaskActivity : AppCompatActivity() {
             saveTask()
         }
 
-        /*val categoryNew = Category(-1, getString(R.string.new_category), R.color.md_theme_secondary, R.drawable.ic_add)
-        categoryList.add(categoryNew)
-        categoryAdapter = CategoryAdapter(categoryList, { position ->
-            if (position == categoryList.lastIndex) {
-                //addCategory()
-            } else {
-                //selectCategory()
+        binding.categoryChip.setOnClickListener {
+            val modalBottomSheet = CategoryModalSheet(categoryList) { position ->
+                category = categoryList[position]
+                setCategory()
             }
-        }, { position ->
-            if (position == categoryList.lastIndex) {
-                false
-            } else {
-                //editCategory()
-                true
-            }
-        })
-        binding.categoryRecyclerView.adapter = categoryAdapter*/
+            modalBottomSheet.show(supportFragmentManager, CategoryModalSheet.TAG)
+        }
     }
 
     private fun loadData() {
@@ -172,6 +164,10 @@ class TaskActivity : AppCompatActivity() {
         setDate(calendar)
         setTime(calendar)
 
+        setCategory()
+    }
+
+    private fun setCategory() {
         binding.categoryChip.text = category.name
         binding.categoryChip.setChipIconResource(category.icon)
         binding.categoryChip.chipBackgroundColor = ColorStateList.valueOf(category.color)
@@ -264,6 +260,7 @@ class TaskActivity : AppCompatActivity() {
         task.allDay = task.reminder && binding.allDaySwitch.isChecked
         //task.priority = binding.priorityAutoCompleteTextView.listSelection
         task.setCalendar(calendar)
+        task.category = category
 
         if (validateTask()) {
             // Si la tarea existe la actualizamos si no la insertamos
