@@ -29,6 +29,8 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingBottom="128dp"
+        android:clipToPadding="false"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <!-- Content -->
@@ -88,9 +90,11 @@
                 android:id="@+id/colorsRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
                 tools:listitem="@layout/item_color"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                app:spanCount="6"/>
+                app:spanCount="6"
+                tools:itemCount="12"/>
 
             <!-- Category icon -->
             <TextView
@@ -104,9 +108,11 @@
                 android:id="@+id/iconsRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
                 tools:listitem="@layout/item_icon"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                app:spanCount="6"/>
+                app:spanCount="6"
+                tools:itemCount="42"/>
 
         </LinearLayout>
 
