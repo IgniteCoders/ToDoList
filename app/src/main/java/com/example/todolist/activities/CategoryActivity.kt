@@ -1,6 +1,7 @@
 package com.example.todolist.activities
 
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -56,11 +57,19 @@ class CategoryActivity : AppCompatActivity() {
         loadData()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_activity_create, menu)
+        return true
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
                 finish()
                 return true
+            }
+            R.id.menu_save -> {
+                saveCategory()
             }
         }
         return super.onOptionsItemSelected(item)

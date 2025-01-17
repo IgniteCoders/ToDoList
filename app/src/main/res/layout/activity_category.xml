@@ -21,6 +21,8 @@
             app:title="@string/activity_category_title_create"
             app:titleCentered="true"
             app:subtitleCentered="true"
+            app:navigationIcon="@drawable/ic_close"
+            app:menu="@menu/menu_activity_create"
             app:layout_collapseMode="pin"
             app:layout_scrollFlags="snap"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>

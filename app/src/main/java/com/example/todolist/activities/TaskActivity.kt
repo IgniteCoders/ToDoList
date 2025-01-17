@@ -3,6 +3,7 @@ package com.example.todolist.activities
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.text.format.DateFormat
+import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -80,11 +81,19 @@ class TaskActivity : AppCompatActivity() {
         loadData()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_activity_create, menu)
+        return true
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
                 finish()
                 return true
+            }
+            R.id.menu_save -> {
+                saveTask()
             }
         }
         return super.onOptionsItemSelected(item)
