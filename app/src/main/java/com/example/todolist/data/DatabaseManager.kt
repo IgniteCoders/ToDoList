@@ -1,4 +1,4 @@
-package com.example.todolist.utils
+package com.example.todolist.data
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
@@ -10,7 +10,7 @@ class DatabaseManager(context: Context) : SQLiteOpenHelper(context, DATABASE_NAM
 
     companion object {
         // If you change the database schema, you must increment the database version.
-        const val DATABASE_VERSION = 4
+        const val DATABASE_VERSION = 6
         const val DATABASE_NAME = "ToDoListDatabase.db"
 
 
@@ -37,7 +37,8 @@ class DatabaseManager(context: Context) : SQLiteOpenHelper(context, DATABASE_NAM
                     "${Category.COLUMN_NAME_ID} INTEGER PRIMARY KEY AUTOINCREMENT," +
                     "${Category.COLUMN_NAME_TITLE} TEXT," +
                     "${Category.COLUMN_NAME_COLOR} INTEGER," +
-                    "${Category.COLUMN_NAME_ICON} INTEGER)"
+                    "${Category.COLUMN_NAME_ICON} INTEGER," +
+                    "${Category.COLUMN_NAME_POSITION} INTEGER)"
 
         private const val SQL_DELETE_TABLE_CATEGORY = "DROP TABLE IF EXISTS ${Category.TABLE_NAME}"
     }
@@ -55,7 +56,7 @@ class DatabaseManager(context: Context) : SQLiteOpenHelper(context, DATABASE_NAM
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         //onDestroy(db)
         //onCreate(db)
-        //db.execSQL("ALTER TABLE ${Task.TABLE_NAME} ADD COLUMN ${Task.COLUMN_NAME_CATEGORY} INTEGER")
+        //db.execSQL("ALTER TABLE ${Category.TABLE_NAME} ADD COLUMN ${Category.COLUMN_NAME_POSITION} INTEGER")
     }
 
     private fun onDestroy(db: SQLiteDatabase) {

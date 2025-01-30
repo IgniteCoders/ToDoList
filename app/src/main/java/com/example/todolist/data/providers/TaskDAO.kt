@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.util.Log
 import com.example.todolist.data.entities.Category
 import com.example.todolist.data.entities.Task
-import com.example.todolist.utils.DatabaseManager
+import com.example.todolist.data.DatabaseManager
 import java.util.Calendar
 
 class TaskDAO(val context: Context) {

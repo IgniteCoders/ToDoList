@@ -1,14 +1,20 @@
 package com.example.todolist.activities
 
 import android.content.Intent
+import android.graphics.Canvas
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.Insets
 import androidx.core.widget.addTextChangedListener
+import androidx.recyclerview.widget.ConcatAdapter
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.todolist.R
 import com.example.todolist.adapters.CategoryAdapter
+import com.example.todolist.adapters.FiltersAdapter
 import com.example.todolist.adapters.TaskAdapter
 import com.example.todolist.data.entities.Category
 import com.example.todolist.data.entities.Task
@@ -19,14 +25,20 @@ import com.example.todolist.utils.getFormattedDate
 import com.example.todolist.utils.setWindowInsets
 import com.example.todolist.utils.toPx
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import java.text.DateFormat
 import java.util.Calendar
+import java.util.Collections
+import java.util.Locale
+
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
 
-    lateinit var adapter: CategoryAdapter
+    lateinit var adapter: ConcatAdapter
+    lateinit var filtersAdapter: FiltersAdapter
+    lateinit var categoryAdapter: CategoryAdapter
     lateinit var searchAdapter: TaskAdapter
 
     lateinit var categoryDAO: CategoryDAO
@@ -55,8 +67,7 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        categoryList = categoryDAO.findAll().toMutableList()
-        adapter.updateItems(categoryList)
+        loadData()
 
         // Refresh search result when back to activity in case we changed something
         if (binding.searchView.isShowing) {
@@ -66,19 +77,36 @@ class MainActivity : AppCompatActivity() {
         binding.addTaskButton.isEnabled = categoryList.isNotEmpty()
     }
 
+    fun onMenuItemClick(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                return true
+            }
+            R.id.menu_settings -> {
+
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     private fun initViews() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.title = getString(R.string.app_name)
         supportActionBar?.subtitle = Calendar.getInstance().getFormattedDate(DateFormat.LONG)
 
-        adapter = CategoryAdapter(categoryList, {
+        filtersAdapter = FiltersAdapter() {
+            onFilterClick(it)
+        }
+
+        categoryAdapter = CategoryAdapter(categoryList, {
             showCategory(it)
         }, {
-            editCategory(it)
-            true
-        }, {
-            onFilterClick(it)
+            //editCategory(it)
+            false
         })
+
+        adapter = ConcatAdapter(filtersAdapter, categoryAdapter)
 
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
@@ -95,11 +123,86 @@ class MainActivity : AppCompatActivity() {
             loadSearchData()
         }
 
+        binding.searchBar.inflateMenu(R.menu.menu_activity_main)
+        binding.searchBar.setOnMenuItemClickListener { menuItem -> onMenuItemClick(menuItem) }
+
         // Crear tarea
         binding.addTaskButton.setOnClickListener {
             val intent = Intent(this, TaskActivity::class.java)
             startActivity(intent)
         }
+
+        configureGestures()
+    }
+
+    private fun loadData() {
+        categoryList = categoryDAO.findAll().toMutableList()
+        categoryAdapter.updateItems(categoryList)
+    }
+
+    private fun loadSearchData() {
+        taskList = taskDAO.findAllByTitle(binding.searchView.text.toString()).toMutableList()
+        searchAdapter.updateItems(taskList)
+    }
+
+    private fun configureGestures() {
+        val gestures = ItemTouchHelper(
+            object : ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP or ItemTouchHelper.DOWN, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+                override fun onMove(
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder,
+                    target: RecyclerView.ViewHolder
+                ): Boolean {
+                    if (viewHolder.absoluteAdapterPosition == 0) return false
+                    if (target.absoluteAdapterPosition == 0) return false
+
+                    swapCategoryPositions(viewHolder.bindingAdapterPosition, target.bindingAdapterPosition)
+
+                    categoryAdapter.notifyItemMoved(viewHolder.bindingAdapterPosition, target.bindingAdapterPosition)
+                    //loadData()
+                    return true
+                }
+
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    if (viewHolder.absoluteAdapterPosition == 0) return
+
+                    if (direction == ItemTouchHelper.LEFT) {
+                        deleteCategory(viewHolder.bindingAdapterPosition)
+                    } else {
+                        editCategory(viewHolder.bindingAdapterPosition)
+                    }
+                }
+
+                override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
+                                         dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
+                    if (viewHolder.absoluteAdapterPosition == 0) return
+
+                    val whiteColor = getColor(R.color.white)
+
+                    RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+
+                        // Swipe left action
+                        .addSwipeLeftLabel(getString(R.string.action_delete).uppercase(Locale.ROOT))
+                        .setSwipeLeftLabelColor(whiteColor)
+                        .addSwipeLeftActionIcon(R.drawable.ic_delete)
+                        .setSwipeLeftActionIconTint(whiteColor)
+                        .addSwipeLeftBackgroundColor(getColor(R.color.delete))
+
+                        // Swipe right action
+                        .addSwipeRightLabel(getString(R.string.action_edit).uppercase(Locale.ROOT))
+                        .setSwipeRightLabelColor(whiteColor)
+                        .addSwipeRightActionIcon(R.drawable.ic_edit)
+                        .setSwipeRightActionIconTint(whiteColor)
+                        .addSwipeRightBackgroundColor(getColor(R.color.md_theme_secondary))
+
+                        // Build
+                        .create()
+                        .decorate()
+
+                    super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                }
+            })
+        gestures.attachToRecyclerView(binding.recyclerView)
     }
 
     private fun showCategory(position: Int) {
@@ -116,8 +219,48 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+    private fun swapCategoryPositions(position1: Int, position2: Int) {
+        println("Swap from $position1 to $position2")
+        val category1 = categoryList[position1]
+        val category2 = categoryList[position2]
+        category1.position = position2
+        category2.position = position1
+        categoryDAO.update(category1)
+        categoryDAO.update(category2)
+        Collections.swap(categoryList, position1, position2)
+    }
+
+    private fun deleteCategory(position: Int) {
+        val category = categoryList[position]
+        // Mostramos un dialogo para asegurarnos de que el usuario quiere borrar la categoria
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.alert_dialog_delete_category_title)
+            .setMessage(R.string.alert_dialog_delete_category_message)
+            .setPositiveButton(android.R.string.ok) { dialog, _ ->
+                // Borramos la tarea en caso de pulsar el boton OK
+                categoryDAO.delete(category)
+                // Actualizamos las posiciones de las categorias que hay por debajo
+                for (i in position..<categoryList.count()) {
+                    categoryList[i].position = i - 1
+                    categoryDAO.update(categoryList[i])
+                    println("Actualizo posicion de $i a ${categoryList[i].position}")
+                }
+                loadData()
+                dialog.dismiss()
+            }
+            .setNegativeButton(android.R.string.cancel) { dialog, _ ->
+                adapter.notifyItemChanged(position + 1)
+                dialog.dismiss()
+            }
+            .setOnCancelListener {
+                adapter.notifyItemChanged(position + 1)
+            }
+            .setIcon(R.drawable.ic_delete)
+            .show()
+    }
+
     private fun onFilterClick(filter: Int) {
-        if (filter == CategoryAdapter.FILTER_NEW) {
+        if (filter == FiltersAdapter.FILTER_NEW) {
             val intent = Intent(this, CategoryActivity::class.java)
             startActivity(intent)
         } else {
@@ -125,11 +268,6 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra(TasksActivity.EXTRA_FILTER, filter)
             startActivity(intent)
         }
-    }
-
-    private fun loadSearchData() {
-        taskList = taskDAO.findAllByTitle(binding.searchView.text.toString()).toMutableList()
-        searchAdapter.updateItems(taskList)
     }
 
     // Funcion para cuando marcamos una tarea (finalizada/pendiente)
@@ -146,8 +284,8 @@ class MainActivity : AppCompatActivity() {
         val task = taskList[position]
         // Mostramos un dialogo para asegurarnos de que el usuario quiere borrar la tarea
         MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.alert_dialog_delete_title)
-            .setMessage(R.string.alert_dialog_delete_message)
+            .setTitle(R.string.alert_dialog_delete_task_title)
+            .setMessage(R.string.alert_dialog_delete_task_message)
             .setPositiveButton(android.R.string.ok) { dialog, _ ->
                 // Borramos la tarea en caso de pulsar el boton OK
                 taskDAO.delete(task)

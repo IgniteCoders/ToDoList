@@ -365,4 +365,13 @@
 
     </LinearLayout>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/activity_main_title"
+        android:textStyle="bold"
+        android:textAppearance="@style/TextAppearance.Material3.TitleLarge"/>
+
 </LinearLayout>

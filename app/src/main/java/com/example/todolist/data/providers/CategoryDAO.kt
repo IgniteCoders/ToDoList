@@ -6,7 +6,7 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
 import com.example.todolist.data.entities.Category
-import com.example.todolist.utils.DatabaseManager
+import com.example.todolist.data.DatabaseManager
 
 class CategoryDAO(val context: Context) {
 
@@ -25,6 +25,7 @@ class CategoryDAO(val context: Context) {
             put(Category.COLUMN_NAME_TITLE, category.name)
             put(Category.COLUMN_NAME_COLOR, category.color)
             put(Category.COLUMN_NAME_ICON, category.icon)
+            put(Category.COLUMN_NAME_POSITION, category.position)
         }
     }
 
@@ -33,8 +34,9 @@ class CategoryDAO(val context: Context) {
         val name = cursor.getString(cursor.getColumnIndexOrThrow(Category.COLUMN_NAME_TITLE))
         val color = cursor.getInt(cursor.getColumnIndexOrThrow(Category.COLUMN_NAME_COLOR))
         val icon = cursor.getInt(cursor.getColumnIndexOrThrow(Category.COLUMN_NAME_ICON))
+        val position = cursor.getInt(cursor.getColumnIndexOrThrow(Category.COLUMN_NAME_POSITION))
 
-        return Category(id, name, color, icon)
+        return Category(id, name, color, icon, position)
     }
 
     fun insert(category: Category) {
@@ -120,7 +122,7 @@ class CategoryDAO(val context: Context) {
                 null,                   // The values for the WHERE clause
                 null,                       // don't group the rows
                 null,                         // don't filter by row groups
-                null                        // The sort order
+                "${Category.COLUMN_NAME_POSITION}"                        // The sort order
             )
 
             while (cursor.moveToNext()) {
@@ -133,6 +135,34 @@ class CategoryDAO(val context: Context) {
             close()
         }
         return list
+    }
+
+    fun countAll(): Int {
+        open()
+
+        var count = 0
+
+        try {
+            val cursor = db.query(
+                Category.TABLE_NAME,                 // The table to query
+                arrayOf("COUNT(*)"),     // The array of columns to return (pass null to get all)
+                null,                // The columns for the WHERE clause
+                null,          // The values for the WHERE clause
+                null,                   // don't group the rows
+                null,                   // don't filter by row groups
+                null               // The sort order
+            )
+            if (cursor.moveToNext()) {
+                count = cursor.getInt(0)
+            }
+            cursor.close()
+        } catch (e: Exception) {
+            Log.e("DB", e.stackTraceToString())
+        } finally {
+            close()
+        }
+
+        return count
     }
 
 }

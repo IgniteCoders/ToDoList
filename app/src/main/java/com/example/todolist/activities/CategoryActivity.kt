@@ -49,7 +49,7 @@ class CategoryActivity : AppCompatActivity() {
             category = categoryDAO.findById(id)!!
         } else {
             isEditing = false
-            category = Category(-1, "", Category.colors[0], Category.icons[0])
+            category = Category(-1, "", Category.colors[0], Category.icons[0], categoryDAO.countAll())
         }
 
         initViews()

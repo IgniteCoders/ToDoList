@@ -7,13 +7,12 @@ import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.Insets
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todolist.R
 import com.example.todolist.adapters.CategoryAdapter
+import com.example.todolist.adapters.FiltersAdapter
 import com.example.todolist.adapters.TaskAdapter
 import com.example.todolist.data.entities.Category
 import com.example.todolist.data.entities.Task
@@ -28,6 +27,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import java.text.DateFormat
 import java.util.Calendar
+import java.util.Locale
 
 
 class TasksActivity : AppCompatActivity() {
@@ -106,27 +106,27 @@ class TasksActivity : AppCompatActivity() {
             var color = getColor(R.color.md_theme_primary)
             var icon = R.drawable.ic_inbox
             when (filter) {
-                CategoryAdapter.FILTER_TODAY        -> {
+                FiltersAdapter.FILTER_TODAY        -> {
                     taskList = taskDAO.findAllByDate(Calendar.getInstance().removeTime()).toMutableList()
                     title = getString(R.string.filter_today)
                     icon = R.drawable.ic_calendar
                 }
-                CategoryAdapter.FILTER_SCHEDULED    -> {
+                FiltersAdapter.FILTER_SCHEDULED    -> {
                     taskList = taskDAO.findAllByReminder().toMutableList()
                     title = getString(R.string.filter_scheduled)
                     icon = R.drawable.ic_clock
                 }
-                CategoryAdapter.FILTER_ALL          -> {
+                FiltersAdapter.FILTER_ALL          -> {
                     taskList = taskDAO.findAll().toMutableList()
                     title = getString(R.string.filter_all)
                     icon = R.drawable.ic_inbox
                 }
-                CategoryAdapter.FILTER_PRIORITY     -> {
+                FiltersAdapter.FILTER_PRIORITY     -> {
                     taskList = taskDAO.findAllByPriority().toMutableList()
                     title = getString(R.string.filter_priority)
                     icon = R.drawable.ic_priority
                 }
-                CategoryAdapter.FILTER_DONE         -> {
+                FiltersAdapter.FILTER_DONE         -> {
                     taskList = taskDAO.findAllByDone().toMutableList()
                     title = getString(R.string.filter_completed)
                     icon = R.drawable.ic_completed
@@ -173,15 +173,15 @@ class TasksActivity : AppCompatActivity() {
                     viewHolder: RecyclerView.ViewHolder,
                     target: RecyclerView.ViewHolder
                 ): Boolean {
-                    adapter.notifyItemMoved(viewHolder.adapterPosition, target.adapterPosition)
-                    return true
+                    //adapter.notifyItemMoved(viewHolder.bindingAdapterPosition, target.bindingAdapterPosition)
+                    return false
                 }
 
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                     if (direction == ItemTouchHelper.LEFT) {
-                        deleteTask(viewHolder.adapterPosition)
+                        deleteTask(viewHolder.bindingAdapterPosition)
                     } else {
-                        checkTask(viewHolder.adapterPosition)
+                        checkTask(viewHolder.bindingAdapterPosition)
                     }
                 }
 
@@ -196,14 +196,14 @@ class TasksActivity : AppCompatActivity() {
                     RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
 
                         // Swipe left action
-                        .addSwipeLeftLabel(getString(R.string.action_delete))
+                        .addSwipeLeftLabel(getString(R.string.action_delete).uppercase(Locale.ROOT))
                         .setSwipeLeftLabelColor(whiteColor)
                         .addSwipeLeftActionIcon(R.drawable.ic_delete)
                         .setSwipeLeftActionIconTint(whiteColor)
                         .addSwipeLeftBackgroundColor(getColor(R.color.delete))
 
                         // Swipe right action
-                        .addSwipeRightLabel(getString(rightTextRes))
+                        .addSwipeRightLabel(getString(rightTextRes).uppercase(Locale.ROOT))
                         .setSwipeRightLabelColor(whiteColor)
                         .addSwipeRightActionIcon(rightIconRes)
                         .setSwipeRightActionIconTint(whiteColor)
@@ -233,8 +233,8 @@ class TasksActivity : AppCompatActivity() {
         val task = taskList[position]
         // Mostramos un dialogo para asegurarnos de que el usuario quiere borrar la tarea
         MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.alert_dialog_delete_title)
-            .setMessage(R.string.alert_dialog_delete_message)
+            .setTitle(R.string.alert_dialog_delete_task_title)
+            .setMessage(R.string.alert_dialog_delete_task_message)
             .setPositiveButton(android.R.string.ok) { dialog, _ ->
                 // Borramos la tarea en caso de pulsar el boton OK
                 taskDAO.delete(task)

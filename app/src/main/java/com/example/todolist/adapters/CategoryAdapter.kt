@@ -5,96 +5,42 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.example.todolist.R
 import com.example.todolist.data.entities.Category
 import com.example.todolist.data.providers.TaskDAO
 import com.example.todolist.databinding.ItemCategoryBinding
-import com.example.todolist.databinding.ItemFilterBinding
-import com.example.todolist.utils.removeTime
-import java.util.Calendar
+import com.example.todolist.adapters.utils.CategoryDiffUtils
 
 class CategoryAdapter(
     var items: List<Category>,
     val onItemClick: (Int) -> Unit,
-    val onItemLongClick: (Int) -> Boolean,
-    val onFilterClick: (Int) -> Unit
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    val onItemLongClick: (Int) -> Boolean
+) : RecyclerView.Adapter<CategoryAdapter.ViewHolder>() {
 
-    companion object {
-        const val FILTER_TODAY      = 0
-        const val FILTER_SCHEDULED  = 1
-        const val FILTER_ALL        = 2
-        const val FILTER_PRIORITY   = 3
-        const val FILTER_DONE       = 4
-        const val FILTER_NEW        = 5
-    }
-
-    override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
-        if (position == 0) {
-            val holder = viewHolder as FiltersViewHolder
-            holder.render()
-            holder.binding.filterToday.setOnClickListener { onFilterClick(FILTER_TODAY) }
-            holder.binding.filterScheduled.setOnClickListener { onFilterClick(FILTER_SCHEDULED) }
-            holder.binding.filterAll.setOnClickListener { onFilterClick(FILTER_ALL) }
-            holder.binding.filterPriority.setOnClickListener { onFilterClick(FILTER_PRIORITY) }
-            holder.binding.filterCompleted.setOnClickListener { onFilterClick(FILTER_DONE) }
-            holder.binding.filterNew.setOnClickListener { onFilterClick(FILTER_NEW) }
-        } else {
-            val holder = viewHolder as ViewHolder
-            val category = items[position - 1]
-            holder.render(category)
-            holder.binding.itemView.setOnClickListener {
-                onItemClick(holder.adapterPosition - 1)
-            }
-            holder.binding.itemView.setOnLongClickListener {
-                onItemLongClick(holder.adapterPosition - 1)
-            }
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val category = items[position]
+        holder.render(category)
+        holder.binding.itemView.setOnClickListener {
+            onItemClick(holder.bindingAdapterPosition)
+        }
+        holder.binding.itemView.setOnLongClickListener {
+            onItemLongClick(holder.bindingAdapterPosition)
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        if (viewType == 0) {
-            val binding = ItemFilterBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            return FiltersViewHolder(binding)
-        } else {
-            val binding = ItemCategoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            return ViewHolder(binding)
-        }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val binding = ItemCategoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
-        return items.size + 1
-    }
-
-    override fun getItemViewType(position: Int): Int {
-        if (position == 0) {
-            return 0
-        } else {
-            return 1
-        }
+        return items.size
     }
 
     fun updateItems(items: List<Category>) {
-        /*val diffUtils = CategoryDiffUtils(this.items, items)
+        val diffUtils = CategoryDiffUtils(this.items, items)
         val diffResult = DiffUtil.calculateDiff(diffUtils)
         this.items = items
-        diffResult.dispatchUpdatesTo(this)*/
-        this.items = items
-        notifyDataSetChanged()
-    }
-
-    class FiltersViewHolder(val binding: ItemFilterBinding) : RecyclerView.ViewHolder(binding.root) {
-
-        private val context = binding.root.context
-        private val taskDAO = TaskDAO(context)
-
-        fun render() {
-            binding.numberOfTasksTodayTextView.text = taskDAO.countByDate(Calendar.getInstance().removeTime()).toString()
-            binding.numberOfTasksScheduledTextView.text = taskDAO.countByReminder().toString()
-            binding.numberOfTasksAllTextView.text = taskDAO.countAll().toString()
-            binding.numberOfTasksPriorityTextView.text = taskDAO.countByPriority().toString()
-            binding.numberOfTasksCompletedTextView.text = taskDAO.countByDone().toString()
-        }
+        diffResult.dispatchUpdatesTo(this)
     }
 
     class ViewHolder(val binding: ItemCategoryBinding) : RecyclerView.ViewHolder(binding.root) {

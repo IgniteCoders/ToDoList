@@ -8,16 +8,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.todolist.R
 import com.example.todolist.data.entities.Task
 import com.example.todolist.databinding.ItemTaskBinding
-import com.example.todolist.utils.TaskDiffUtils
+import com.example.todolist.adapters.utils.TaskDiffUtils
+import com.example.todolist.utils.addStrikethrough
 import com.example.todolist.utils.getFormattedDate
-import com.example.todolist.utils.getFormattedDateTime
 import com.example.todolist.utils.getFormattedTime
 import com.example.todolist.utils.isBeforeToday
 import com.example.todolist.utils.isToday
 import com.example.todolist.utils.isTomorrow
 import com.example.todolist.utils.isYesterday
-import java.text.DateFormat
-import java.util.Locale
 
 class TaskAdapter(
     var items: List<Task>,
@@ -65,8 +63,14 @@ class TaskAdapter(
         fun render(task: Task) {
             this.task = task
 
-            binding.nameTextView.text = task.title
             binding.doneCheckBox.isChecked = task.done
+            if (task.done) {
+                binding.nameTextView.text = task.title.addStrikethrough()
+                binding.nameTextView.isEnabled = false
+            } else {
+                binding.nameTextView.text = task.title
+                binding.nameTextView.isEnabled = true
+            }
 
             binding.priorityImageView.setColorFilter(context.getColor(task.getPriorityColor()))
             when (task.priority) {
