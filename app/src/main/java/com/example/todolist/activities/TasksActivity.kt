@@ -177,6 +177,11 @@ class TasksActivity : AppCompatActivity() {
                     return false
                 }
 
+                // No se reordenaran las tareas por ahora
+                override fun isLongPressDragEnabled(): Boolean {
+                    return false
+                }
+
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                     if (direction == ItemTouchHelper.LEFT) {
                         deleteTask(viewHolder.bindingAdapterPosition)
