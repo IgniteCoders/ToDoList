@@ -37,16 +37,16 @@ class TasksActivity : AppCompatActivity() {
         const val EXTRA_FILTER = "FILTER"
     }
 
-    lateinit var binding: ActivityTasksBinding
+    private lateinit var binding: ActivityTasksBinding
 
-    lateinit var taskDAO: TaskDAO
-    var taskList: MutableList<Task> = mutableListOf()
+    private lateinit var taskDAO: TaskDAO
+    private var taskList: MutableList<Task> = mutableListOf()
 
-    lateinit var adapter: TaskAdapter
+    private lateinit var adapter: TaskAdapter
 
-    lateinit var categoryDAO: CategoryDAO
-    var category: Category? = null
-    var filter: Int = -1
+    private lateinit var categoryDAO: CategoryDAO
+    private var category: Category? = null
+    private var filter: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

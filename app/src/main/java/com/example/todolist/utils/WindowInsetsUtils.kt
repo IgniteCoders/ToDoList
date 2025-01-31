@@ -27,7 +27,7 @@ import androidx.core.view.updateLayoutParams
  *     }
  * ```
  * The default behaviour adjusts the left, top, and right padding of the root view
- * based on the system bars' inset values. The bottom padding is set to 0.
+ * based on the system bars' inset values.
  *
  * @param rootView The root view to which the padding adjustments will be applied.
  *                 This view should be the main container in the activity's layout.
@@ -35,7 +35,35 @@ import androidx.core.view.updateLayoutParams
 fun ComponentActivity.setWindowInsets(rootView: View) {
     ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
         val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-        v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
+        v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+        insets
+    }
+}
+
+/**
+ * Sets the padding of the root view to account for the keyboard' insets
+ * for this [ComponentActivity] using `WindowInsets`.
+ *
+ * To set it up with the default behaviour, call this method in your Activity's onCreate method:
+ * ```
+ *     override fun onCreate(savedInstanceState: Bundle?) {
+ *         super.onCreate(savedInstanceState)
+ *         ...
+ *         setContentView(binding.root)
+ *         setWindowImeInsets(binding.root)
+ *         ...
+ *     }
+ * ```
+ * The default behaviour adjusts the left, top, and right padding of the root view
+ * based on the keyboard' inset values.
+ *
+ * @param rootView The root view to which the padding adjustments will be applied.
+ *                 This view should be the main container in the activity's layout.
+ */
+fun ComponentActivity.setWindowImeInsets(rootView: View) {
+    ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
+        val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
+        v.setPadding(ime.left, ime.top, ime.right, ime.bottom)
         insets
     }
 }

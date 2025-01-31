@@ -34,18 +34,18 @@ import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var binding: ActivityMainBinding
+    private lateinit var binding: ActivityMainBinding
 
-    lateinit var adapter: ConcatAdapter
-    lateinit var filtersAdapter: FiltersAdapter
-    lateinit var categoryAdapter: CategoryAdapter
-    lateinit var searchAdapter: TaskAdapter
+    private lateinit var adapter: ConcatAdapter
+    private lateinit var filtersAdapter: FiltersAdapter
+    private lateinit var categoryAdapter: CategoryAdapter
+    private lateinit var searchAdapter: TaskAdapter
 
-    lateinit var categoryDAO: CategoryDAO
-    var categoryList: MutableList<Category> = mutableListOf()
+    private lateinit var categoryDAO: CategoryDAO
+    private var categoryList: MutableList<Category> = mutableListOf()
 
-    lateinit var taskDAO: TaskDAO
-    var taskList: MutableList<Task> = mutableListOf()
+    private lateinit var taskDAO: TaskDAO
+    private var taskList: MutableList<Task> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,14 +77,15 @@ class MainActivity : AppCompatActivity() {
         binding.addTaskButton.isEnabled = categoryList.isNotEmpty()
     }
 
-    fun onMenuItemClick(item: MenuItem): Boolean {
+    private fun onMenuItemClick(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
                 finish()
                 return true
             }
             R.id.menu_settings -> {
-
+                val intent = Intent(this, SettingsActivity::class.java)
+                startActivity(intent)
             }
         }
         return super.onOptionsItemSelected(item)

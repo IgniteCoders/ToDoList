@@ -3,6 +3,7 @@
 
     <!-- Activity titles -->
     <string name="activity_main_title">Task categories</string>
+    <string name="activity_settings_title">Ajustes</string>
     <string name="activity_tasks_title">My tasks list</string>
     <string name="activity_task_title_create">Add new task</string>
     <string name="activity_task_title_edit">Edit task</string>

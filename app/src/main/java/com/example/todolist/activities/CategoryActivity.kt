@@ -14,6 +14,7 @@ import com.example.todolist.adapters.IconAdapter
 import com.example.todolist.data.entities.Category
 import com.example.todolist.data.providers.CategoryDAO
 import com.example.todolist.databinding.ActivityCategoryBinding
+import com.example.todolist.utils.setWindowImeInsets
 import com.example.todolist.utils.setWindowInsets
 
 class CategoryActivity : AppCompatActivity() {
@@ -22,14 +23,14 @@ class CategoryActivity : AppCompatActivity() {
         const val EXTRA_CATEGORY_ID = "CATEGORY_ID"
     }
 
-    lateinit var binding: ActivityCategoryBinding
+    private lateinit var binding: ActivityCategoryBinding
 
-    var isEditing: Boolean = false
-    lateinit var categoryDAO: CategoryDAO
-    lateinit var category: Category
+    private var isEditing: Boolean = false
+    private lateinit var categoryDAO: CategoryDAO
+    private lateinit var category: Category
 
-    lateinit var colorAdapter: ColorAdapter
-    lateinit var iconAdapter: IconAdapter
+    private lateinit var colorAdapter: ColorAdapter
+    private lateinit var iconAdapter: IconAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +40,7 @@ class CategoryActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         //setWindowInsets(binding.root)
+        setWindowImeInsets(binding.root)
 
         categoryDAO = CategoryDAO(this)
 

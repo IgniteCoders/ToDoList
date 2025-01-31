@@ -18,6 +18,7 @@ import com.example.todolist.utils.CategoryModalSheet
 import com.example.todolist.utils.getFormattedDate
 import com.example.todolist.utils.getFormattedTime
 import com.example.todolist.utils.removeTime
+import com.example.todolist.utils.setWindowImeInsets
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
@@ -31,16 +32,16 @@ class TaskActivity : AppCompatActivity() {
         const val EXTRA_CATEGORY_ID = "CATEGORY_ID"
     }
 
-    lateinit var binding: ActivityTaskBinding
+    private lateinit var binding: ActivityTaskBinding
 
-    var isEditing: Boolean = false
-    lateinit var taskDAO: TaskDAO
-    lateinit var task: Task
-    lateinit var calendar: Calendar
+    private var isEditing: Boolean = false
+    private lateinit var taskDAO: TaskDAO
+    private lateinit var task: Task
+    private lateinit var calendar: Calendar
 
-    lateinit var categoryDAO: CategoryDAO
-    var categoryList: MutableList<Category> = mutableListOf()
-    lateinit var category: Category
+    private lateinit var categoryDAO: CategoryDAO
+    private var categoryList: MutableList<Category> = mutableListOf()
+    private lateinit var category: Category
 
     //lateinit var categoryAdapter: CategoryAdapter
 
@@ -52,6 +53,7 @@ class TaskActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         //setWindowInsets(binding.root)
+        setWindowImeInsets(binding.root)
 
         categoryDAO = CategoryDAO(this)
         taskDAO = TaskDAO(this)
