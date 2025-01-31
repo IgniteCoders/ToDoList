@@ -10,6 +10,8 @@ data class Category (
     var icon: Int,
     var position: Int
 ) {
+    var numberOfTasksDone = 0
+    var numberOfTasksTotal = 0
 
     companion object {
         const val TABLE_NAME = "Category"

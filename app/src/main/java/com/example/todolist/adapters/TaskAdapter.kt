@@ -78,9 +78,9 @@ class TaskAdapter(
                 1, 2 -> binding.priorityImageView.visibility = View.VISIBLE
             }
 
-            binding.dateTextView.visibility = View.GONE
+            if (task.reminder) {
+                val calendar = task.getCalendar()
 
-            task.getCalendar()?.let { calendar ->
                 binding.dateTextView.visibility = View.VISIBLE
 
                 var dateText = if (calendar.isToday()) {
@@ -102,6 +102,8 @@ class TaskAdapter(
                 } else {
                     binding.dateTextView.setTextColor(context.getColor(R.color.gray))
                 }
+            } else {
+                binding.dateTextView.visibility = View.GONE
             }
 
             binding.categoryView.setColorFilter(task.category.color)

@@ -49,9 +49,9 @@ data class Task(
         }
     }
 
-    fun getCalendar(): Calendar? {
+    fun getCalendar(): Calendar {
+        val calendar = Calendar.getInstance()
         if (reminder) {
-            val calendar = Calendar.getInstance()
             if (allDay) {
                 calendar.timeInMillis = date
             } else {
@@ -59,7 +59,10 @@ data class Task(
             }
             return calendar
         } else {
-            return null
+            // When the task is created we set the datetime even if it has no reminder
+            calendar.timeInMillis = date + time
+            return calendar
+            // return null
         }
     }
 

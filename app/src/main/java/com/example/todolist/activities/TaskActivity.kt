@@ -17,6 +17,7 @@ import com.example.todolist.databinding.ItemCategoryChipBinding
 import com.example.todolist.utils.CategoryModalSheet
 import com.example.todolist.utils.getFormattedDate
 import com.example.todolist.utils.getFormattedTime
+import com.example.todolist.utils.removeTime
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
@@ -69,10 +70,12 @@ class TaskActivity : AppCompatActivity() {
             isEditing = true
             task = taskDAO.findById(id)!!
             category = task.category
+            calendar = task.getCalendar()
         } else {
             isEditing = false
             category = category
             task = Task(-1, "", category = category)
+            calendar = Calendar.getInstance()
         }
 
 
@@ -161,17 +164,14 @@ class TaskActivity : AppCompatActivity() {
     private fun loadData() {
         binding.titleTextField.editText?.setText(task.title)
         binding.descriptionTextField.editText?.setText(task.description)
+
         binding.reminderSwitch.isChecked = task.reminder
         binding.allDaySwitch.isChecked = task.allDay
-        setPriority()
 
-        if (task.reminder) {
-            calendar = task.getCalendar()!!
-        } else {
-            calendar = Calendar.getInstance()
-        }
         setDate(calendar)
         setTime(calendar)
+
+        setPriority()
 
         setCategory()
     }
@@ -202,6 +202,10 @@ class TaskActivity : AppCompatActivity() {
 
         datePicker.addOnPositiveButtonClickListener { selection ->
             calendar.timeInMillis = selection
+            // Remove an extra hour added when user choose the day
+            calendar.removeTime()
+            // Setting the time that previously the user selected
+            calendar.timeInMillis += task.time
             setDate(calendar)
         }
 

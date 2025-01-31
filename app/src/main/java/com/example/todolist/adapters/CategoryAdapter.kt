@@ -56,8 +56,8 @@ class CategoryAdapter(
             binding.iconImageView.setImageResource(category.icon)
             binding.colorCardView.setCardBackgroundColor(category.color)
 
-            val numberOfTasksDone = taskDAO.countByCategoryAndDone(category, true).toFloat()
-            val numberOfTasksTotal = taskDAO.countByCategory(category).toFloat()
+            val numberOfTasksDone = category.numberOfTasksDone.toFloat()
+            val numberOfTasksTotal = category.numberOfTasksTotal.toFloat()
 
             var completed = false
             if (numberOfTasksTotal == 0f) {

@@ -213,6 +213,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun editCategory(position: Int) {
+        categoryAdapter.notifyItemChanged(position)
         val category = categoryList[position]
         val intent = Intent(this, CategoryActivity::class.java)
         intent.putExtra(CategoryActivity.EXTRA_CATEGORY_ID, category.id)
@@ -249,11 +250,11 @@ class MainActivity : AppCompatActivity() {
                 dialog.dismiss()
             }
             .setNegativeButton(android.R.string.cancel) { dialog, _ ->
-                adapter.notifyItemChanged(position + 1)
+                categoryAdapter.notifyItemChanged(position)
                 dialog.dismiss()
             }
             .setOnCancelListener {
-                adapter.notifyItemChanged(position + 1)
+                categoryAdapter.notifyItemChanged(position)
             }
             .setIcon(R.drawable.ic_delete)
             .show()
@@ -275,7 +276,7 @@ class MainActivity : AppCompatActivity() {
         val task = taskList[position]
         task.done = !task.done
         taskDAO.update(task)
-        adapter.notifyItemChanged(position)
+        searchAdapter.notifyItemChanged(position)
         loadSearchData()
     }
 
@@ -293,7 +294,7 @@ class MainActivity : AppCompatActivity() {
                 dialog.dismiss()
             }
             .setNegativeButton(android.R.string.cancel) { dialog, _ ->
-                adapter.notifyItemChanged(position)
+                searchAdapter.notifyItemChanged(position)
                 dialog.dismiss()
             }
             .setIcon(R.drawable.ic_delete)

@@ -36,7 +36,13 @@ class CategoryDAO(val context: Context) {
         val icon = cursor.getInt(cursor.getColumnIndexOrThrow(Category.COLUMN_NAME_ICON))
         val position = cursor.getInt(cursor.getColumnIndexOrThrow(Category.COLUMN_NAME_POSITION))
 
-        return Category(id, name, color, icon, position)
+        val category = Category(id, name, color, icon, position)
+
+        val taskDAO = TaskDAO(context)
+        category.numberOfTasksDone = taskDAO.countByCategoryAndDone(category, true)
+        category.numberOfTasksTotal = taskDAO.countByCategory(category)
+
+        return category
     }
 
     fun insert(category: Category) {
