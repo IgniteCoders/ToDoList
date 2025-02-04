@@ -1,4 +1,4 @@
-package com.example.todolist.data
+package com.example.todolist.managers
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase

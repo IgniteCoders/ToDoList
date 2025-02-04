@@ -31,7 +31,7 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="128dp"
+        android:paddingBottom="64dp"
         android:clipToPadding="false"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
@@ -116,17 +116,17 @@
                 app:spanCount="6"
                 tools:itemCount="42"/>
 
+            <Button
+                android:id="@+id/saveButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|bottom"
+                android:layout_margin="24dp"
+                android:text="@string/action_save"
+                app:icon="@drawable/ic_save"/>
+
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
-
-    <Button
-        android:id="@+id/saveButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center|bottom"
-        android:layout_margin="24dp"
-        android:text="@string/action_save"
-        app:icon="@drawable/ic_save"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

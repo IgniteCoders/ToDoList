@@ -6,7 +6,7 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
 import com.example.todolist.data.entities.Category
-import com.example.todolist.data.DatabaseManager
+import com.example.todolist.managers.DatabaseManager
 
 class CategoryDAO(val context: Context) {
 

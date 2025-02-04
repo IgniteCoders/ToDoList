@@ -4,7 +4,7 @@ import com.example.todolist.R
 import java.util.Calendar
 
 data class Task(
-    val id: Long,
+    var id: Long,
     var title: String,
     var description: String = "",
     var reminder: Boolean = false,

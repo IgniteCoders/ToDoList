@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.util.Log
 import com.example.todolist.data.entities.Category
 import com.example.todolist.data.entities.Task
-import com.example.todolist.data.DatabaseManager
+import com.example.todolist.managers.DatabaseManager
 import java.util.Calendar
 
 class TaskDAO(val context: Context) {
@@ -52,7 +52,7 @@ class TaskDAO(val context: Context) {
         return Task(id, name, description, reminder, allDay, date, time, priority, done, category)
     }
 
-    fun insert(task: Task) {
+    fun insert(task: Task): Long {
         open()
 
         // Create a new map of values, where column names are the keys
@@ -61,8 +61,11 @@ class TaskDAO(val context: Context) {
         try {
             // Insert the new row, returning the primary key value of the new row
             val id = db.insert(Task.TABLE_NAME, null, values)
+            task.id = id
+            return id
         } catch (e: Exception) {
             Log.e("DB", e.stackTraceToString())
+            return -1
         } finally {
             close()
         }
