@@ -22,7 +22,7 @@ class TaskDAO(val context: Context) {
         db.close()
     }
 
-    fun getContentValues(task: Task): ContentValues {
+    private fun getContentValues(task: Task): ContentValues {
         return ContentValues().apply {
             put(Task.COLUMN_NAME_TITLE, task.title)
             put(Task.COLUMN_NAME_DESCRIPTION, task.description)
@@ -36,7 +36,7 @@ class TaskDAO(val context: Context) {
         }
     }
 
-    fun cursorToEntity(cursor: Cursor): Task {
+    private fun cursorToEntity(cursor: Cursor): Task {
         val id = cursor.getLong(cursor.getColumnIndexOrThrow(Task.COLUMN_NAME_ID))
         val name = cursor.getString(cursor.getColumnIndexOrThrow(Task.COLUMN_NAME_TITLE))
         val description = cursor.getString(cursor.getColumnIndexOrThrow(Task.COLUMN_NAME_DESCRIPTION))
@@ -80,6 +80,7 @@ class TaskDAO(val context: Context) {
         try {
             // Update the existing rows, returning the number of affected rows
             val updatedRows = db.update(Task.TABLE_NAME, values, "${Task.COLUMN_NAME_ID} = ${task.id}", null)
+            Log.i("DB", "Updated $updatedRows rows in ${Task.TABLE_NAME}")
         } catch (e: Exception) {
             Log.e("DB", e.stackTraceToString())
         } finally {
@@ -93,6 +94,7 @@ class TaskDAO(val context: Context) {
         try {
             // Delete the existing row, returning the number of affected rows
             val deletedRows = db.delete(Task.TABLE_NAME, "${Task.COLUMN_NAME_ID} = ${task.id}", null)
+            Log.i("DB", "Deleted $deletedRows rows in ${Task.TABLE_NAME}")
         } catch (e: Exception) {
             Log.e("DB", e.stackTraceToString())
         } finally {
@@ -156,7 +158,7 @@ class TaskDAO(val context: Context) {
     fun findAllBy(where: String?) : List<Task> {
         open()
 
-        var list: MutableList<Task> = mutableListOf()
+        val list: MutableList<Task> = mutableListOf()
 
         try {
             val cursor = db.query(

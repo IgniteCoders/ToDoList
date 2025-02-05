@@ -2,15 +2,10 @@ package com.example.todolist.activities
 
 import android.Manifest
 import android.app.AlarmManager
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
-import android.graphics.Color
-import android.media.AudioAttributes
-import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -29,7 +24,6 @@ import com.example.todolist.data.providers.CategoryDAO
 import com.example.todolist.data.providers.TaskDAO
 import com.example.todolist.databinding.ActivityTaskBinding
 import com.example.todolist.utils.CategoryModalSheet
-import com.example.todolist.utils.Constants
 import com.example.todolist.utils.ReminderBroadcastReceiver
 import com.example.todolist.utils.getFormattedDate
 import com.example.todolist.utils.getFormattedTime

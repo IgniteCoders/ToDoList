@@ -5,8 +5,6 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.todolist.R
 import com.example.todolist.adapters.ColorAdapter
@@ -15,7 +13,6 @@ import com.example.todolist.data.entities.Category
 import com.example.todolist.data.providers.CategoryDAO
 import com.example.todolist.databinding.ActivityCategoryBinding
 import com.example.todolist.utils.setWindowImeInsets
-import com.example.todolist.utils.setWindowInsets
 
 class CategoryActivity : AppCompatActivity() {
 
@@ -94,8 +91,8 @@ class CategoryActivity : AppCompatActivity() {
         binding.colorsRecyclerView.adapter = colorAdapter
         binding.colorsRecyclerView.layoutManager = GridLayoutManager(this, 6)
 
-        iconAdapter = IconAdapter(Category.icons, Category.icons.indexOf(category.icon)) {
-            category.icon = Category.icons[it]
+        iconAdapter = IconAdapter(Category.icons, category.iconPosition) {
+            category.iconPosition = it
             loadColorAndIcon()
         }
         binding.iconsRecyclerView.adapter = iconAdapter

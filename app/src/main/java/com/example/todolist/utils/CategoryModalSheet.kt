@@ -1,12 +1,10 @@
 package com.example.todolist.utils
 
-import android.app.Dialog
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.todolist.R
 import com.example.todolist.data.entities.Category
 import com.example.todolist.databinding.DialogCategorySheetBinding
 import com.example.todolist.databinding.ItemCategoryChipBinding

@@ -22,7 +22,7 @@ class CategoryDiffUtils(private val oldList: List<Category>,
             oldList[oldItemPosition].id != newList[newItemPosition].id -> false
             oldList[oldItemPosition].name != newList[newItemPosition].name -> false
             oldList[oldItemPosition].color != newList[newItemPosition].color -> false
-            oldList[oldItemPosition].icon != newList[newItemPosition].icon -> false
+            oldList[oldItemPosition].iconPosition != newList[newItemPosition].iconPosition -> false
             oldList[oldItemPosition].numberOfTasksDone != newList[newItemPosition].numberOfTasksDone -> false
             oldList[oldItemPosition].numberOfTasksTotal != newList[newItemPosition].numberOfTasksTotal -> false
             else -> true

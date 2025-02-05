@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todolist.R
-import com.example.todolist.adapters.CategoryAdapter
 import com.example.todolist.adapters.FiltersAdapter
 import com.example.todolist.adapters.TaskAdapter
 import com.example.todolist.data.entities.Category

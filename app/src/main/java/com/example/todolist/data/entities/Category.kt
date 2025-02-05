@@ -7,11 +7,13 @@ data class Category (
     var id: Long,
     var name: String,
     var color: Int,
-    var icon: Int,
+    var iconPosition: Int,
     var position: Int
 ) {
     var numberOfTasksDone = 0
     var numberOfTasksTotal = 0
+    val icon: Int
+        get() = icons[iconPosition]
 
     companion object {
         const val TABLE_NAME = "Category"
