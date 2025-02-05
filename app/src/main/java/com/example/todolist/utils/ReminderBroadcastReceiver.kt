@@ -86,6 +86,7 @@ class ReminderBroadcastReceiver: BroadcastReceiver() {
                 .setContentText(task.description)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(task.description))
                 .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
                 .build()
 
             notificationManager.notify(id.toInt(), notification)

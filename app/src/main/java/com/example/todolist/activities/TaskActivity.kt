@@ -397,20 +397,28 @@ class TaskActivity : AppCompatActivity() {
     }
 
     private fun scheduleNotification() {
+        val intent = Intent(applicationContext, ReminderBroadcastReceiver::class.java)
+        intent.putExtra(ReminderBroadcastReceiver.TASK_ID, task.id)
+
+        val pendingIntentFlags = if (task.reminder) {
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        } else {
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_NO_CREATE
+        }
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            applicationContext,
+            task.id.toInt(),
+            intent,
+            pendingIntentFlags
+        )
+
+        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
         if (task.reminder) {
-            val intent = Intent(applicationContext, ReminderBroadcastReceiver::class.java)
-            intent.putExtra(ReminderBroadcastReceiver.TASK_ID, task.id)
-
-            val pendingIntent = PendingIntent.getBroadcast(
-                applicationContext,
-                task.id.toInt(),
-                intent,
-                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-            )
-
-            val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, task.getCalendar().timeInMillis, pendingIntent)
-            //alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, Calendar.getInstance().timeInMillis + 5000, pendingIntent)
+            //alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, Calendar.getInstance().timeInMillis + 10000, pendingIntent)
+        } else if (pendingIntent != null) {
+            alarmManager.cancel(pendingIntent)
         }
     }
 }

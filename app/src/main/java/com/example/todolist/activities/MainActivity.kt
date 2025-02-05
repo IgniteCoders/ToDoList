@@ -5,6 +5,7 @@ import android.graphics.Canvas
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.Insets
 import androidx.core.widget.addTextChangedListener
@@ -46,6 +47,17 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var taskDAO: TaskDAO
     private var taskList: MutableList<Task> = mutableListOf()
+
+    private var intentLauncher = registerForActivityResult(StartActivityForResult()) { result ->
+        if (result.resultCode == RESULT_OK) {
+            result.data?.let { data ->
+                val categoryId = data.getLongExtra(CategoryActivity.EXTRA_CATEGORY_ID, -1)
+                val intent = Intent(this, TasksActivity::class.java)
+                intent.putExtra(TasksActivity.EXTRA_CATEGORY_ID, categoryId)
+                startActivity(intent)
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -264,7 +276,8 @@ class MainActivity : AppCompatActivity() {
     private fun onFilterClick(filter: Int) {
         if (filter == FiltersAdapter.FILTER_NEW) {
             val intent = Intent(this, CategoryActivity::class.java)
-            startActivity(intent)
+            //startActivity(intent)
+            intentLauncher.launch(intent)
         } else {
             val intent = Intent(this, TasksActivity::class.java)
             intent.putExtra(TasksActivity.EXTRA_FILTER, filter)

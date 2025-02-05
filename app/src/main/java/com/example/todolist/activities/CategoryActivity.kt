@@ -1,5 +1,6 @@
 package com.example.todolist.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -48,7 +49,7 @@ class CategoryActivity : AppCompatActivity() {
             category = categoryDAO.findById(id)!!
         } else {
             isEditing = false
-            category = Category(-1, "", Category.colors[0], Category.icons[0], categoryDAO.countAll())
+            category = Category(-1, "", Category.colors[0], 0, categoryDAO.countAll())
         }
 
         initViews()
@@ -140,8 +141,11 @@ class CategoryActivity : AppCompatActivity() {
                 categoryDAO.update(category)
             } else {
                 categoryDAO.insert(category)
-            }
 
+                val resultIntent = Intent()
+                resultIntent.putExtra(EXTRA_CATEGORY_ID, category.id)
+                setResult(RESULT_OK, resultIntent)
+            }
             finish()
         }
     }
