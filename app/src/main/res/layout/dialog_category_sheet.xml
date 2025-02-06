@@ -19,7 +19,20 @@
         android:paddingHorizontal="16dp"
         android:paddingVertical="8dp"/>
 
-    <HorizontalScrollView
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/categoryChipGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:paddingHorizontal="16dp"
+        app:singleLine="false"
+        app:singleSelection="true">
+
+        <!-- Chips can be declared here, or added dynamically. -->
+
+    </com.google.android.material.chip.ChipGroup>
+
+    <!--<HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -29,13 +42,13 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="32dp"
             android:paddingHorizontal="16dp"
-            app:singleLine="false"
+            app:singleLine="true"
             app:singleSelection="true">
 
-            <!-- Chips can be declared here, or added dynamically. -->
+            Chips can be declared here, or added dynamically.
 
         </com.google.android.material.chip.ChipGroup>
 
-    </HorizontalScrollView>
+    </HorizontalScrollView>-->
 
 </LinearLayout>

@@ -7,8 +7,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     tools:text="Category"
-    app:chipIcon="@drawable/ic_inbox"
+    tools:chipIcon="@drawable/ic_inbox"
     app:ensureMinTouchTargetSize="true"
     android:textColor="@color/white"
     app:chipIconTint="@color/white"
-    app:chipBackgroundColor="@color/md_theme_primary" />
+    tools:chipBackgroundColor="@color/md_theme_primary" />

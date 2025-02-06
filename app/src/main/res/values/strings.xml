@@ -1,9 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">ToDoList</string>
 
     <!-- Activity titles -->
     <string name="activity_main_title">Task categories</string>
-    <string name="activity_settings_title">Ajustes</string>
+    <string name="activity_settings_title">Settings</string>
     <string name="activity_tasks_title">My tasks list</string>
     <string name="activity_task_title_create">Add new task</string>
     <string name="activity_task_title_edit">Edit task</string>
@@ -20,7 +21,7 @@
     <string name="label_task_time">Time</string>
     <string name="label_task_description">Description…</string>
 
-    <string name="label_task_select_category">Select a category</string>
+    <string name="label_task_select_category">Select a category:</string>
 
     <!-- TaskActivity field errors -->
     <string name="field_error_task_title_empty">Write something to do</string>

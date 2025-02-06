@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ToDoList</string>
+
+    <!-- Activity titles -->
+    <string name="activity_main_title">Categorías de tareas</string>
+    <string name="activity_settings_title">Ajustes</string>
+    <string name="activity_tasks_title">Mi lista de tareas</string>
+    <string name="activity_task_title_create">Añadir nueva tarea</string>
+    <string name="activity_task_title_edit">Editar tarea</string>
+    <string name="activity_category_title_create">Añadir nueva categoría</string>
+    <string name="activity_category_title_edit">Editar categoría</string>
+
+    <!-- TaskActivity field labels -->
+    <string name="label_task_title">Tarea por hacer…</string>
+    <string name="label_task_category">Categoría:</string>
+    <string name="label_task_priority">Prioridad</string>
+    <string name="label_task_reminder">Recordatorio:</string>
+    <string name="label_task_all_day">Todo el día:</string>
+    <string name="label_task_date">Fecha</string>
+    <string name="label_task_time">Hora</string>
+    <string name="label_task_description">Descripción…</string>
+
+    <string name="label_task_select_category">Seleccionar una categoría:</string>
+
+    <!-- TaskActivity field errors -->
+    <string name="field_error_task_title_empty">Escribe algo para hacer</string>
+    <string name="field_error_task_title_too_long">Demasiado para un título</string>
+    <string name="field_error_task_date_empty">Selecciona una fecha</string>
+    <string name="field_error_task_time_empty">Selecciona una hora</string>
+
+    <!-- Task priorities -->
+    <string name="priority_normal">Normal</string>
+    <string name="priority_high">Alta</string>
+    <string name="priority_urgent">¡Urgente!</string>
+
+    <!-- Calendar utils -->
+    <string name="calendar_yesterday">Ayer</string>
+    <string name="calendar_today">Hoy</string>
+    <string name="calendar_tomorrow">Mañana</string>
+
+    <!-- AlertDialog delete task -->
+    <string name="alert_dialog_delete_task_title">Eliminar tarea</string>
+    <string name="alert_dialog_delete_task_message">¿Estás seguro de que quieres eliminar esta tarea?</string>
+
+    <!-- AlertDialog delete category -->
+    <string name="alert_dialog_delete_category_title">Eliminar categoría</string>
+    <string name="alert_dialog_delete_category_message">¿Estás seguro de que quieres eliminar esta categoría? Eliminar la categoría eliminará todas las tareas que le pertenezcan</string>
+
+    <!-- AlertDialog permissions -->
+    <string name="alert_dialog_permissions_title">Habilitar permisos</string>
+    <string name="alert_dialog_permissions_message">Debes habilitar los permisos para que la aplicación pueda mostrar notificaciones, ¡de lo contrario, los recordatorios programados no mostrarán ninguna notificación!</string>
+
+    <!-- Actions for buttons and menus -->
+    <string name="action_search">Buscar</string>
+    <string name="action_save">Guardar</string>
+    <string name="action_add">Añadir</string>
+    <string name="action_edit">Editar</string>
+    <string name="action_settings">Ajustes</string>
+    <string name="action_delete">Eliminar</string>
+    <string name="action_check">Marcar</string>
+    <string name="action_uncheck">Desmarcar</string>
+
+    <!-- Category filters -->
+    <string name="filter_today">Hoy</string>
+    <string name="filter_scheduled">Programadas</string>
+    <string name="filter_all">Todas</string>
+    <string name="filter_priority">Con prioridad</string>
+    <string name="filter_completed">Completadas</string>
+    <string name="filter_new">Nueva categoría</string>
+
+    <!-- CategoryActivity field labels -->
+    <string name="label_category_title">Categoría…</string>
+    <string name="label_category_color">Color:</string>
+    <string name="label_category_icon">Icono:</string>
+
+    <!-- CategoryActivity field errors -->
+    <string name="field_error_category_title_empty">¡El nombre de la categoría no puede estar vacío!</string>
+    <string name="field_error_category_title_too_long">¡El nombre de la categoría es demasiado largo!</string>
+    <string name="add_category_success_message">Categoría añadida con éxito</string>
+</resources>
