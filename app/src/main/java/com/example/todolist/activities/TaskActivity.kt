@@ -23,8 +23,10 @@ import com.example.todolist.data.entities.Task
 import com.example.todolist.data.providers.CategoryDAO
 import com.example.todolist.data.providers.TaskDAO
 import com.example.todolist.databinding.ActivityTaskBinding
+import com.example.todolist.managers.NotificationManager
+import com.example.todolist.managers.PermissionManager
 import com.example.todolist.utils.CategoryModalSheet
-import com.example.todolist.utils.ReminderBroadcastReceiver
+import com.example.todolist.receivers.ReminderBroadcastReceiver
 import com.example.todolist.utils.getFormattedDate
 import com.example.todolist.utils.getFormattedTime
 import com.example.todolist.utils.removeTime
@@ -41,14 +43,11 @@ class TaskActivity : AppCompatActivity() {
     companion object {
         const val EXTRA_TASK_ID = "TASK_ID"
         const val EXTRA_CATEGORY_ID = "CATEGORY_ID"
-
-        // Constantes para códigos de solicitud
-        const val REQUEST_PERMISSION_POST_NOTIFICATIONS = 101
-        const val REQUEST_PERMISSION_USE_EXACT_ALARM = 102
-        const val REQUEST_PERMISSION_SCHEDULE_EXACT_ALARM = 103
     }
 
     private lateinit var binding: ActivityTaskBinding
+
+    private lateinit var permissionManager: PermissionManager
 
     private var isEditing: Boolean = false
     private lateinit var taskDAO: TaskDAO
@@ -70,6 +69,8 @@ class TaskActivity : AppCompatActivity() {
 
         //setWindowInsets(binding.root)
         setWindowImeInsets(binding.root)
+
+        permissionManager = PermissionManager(this)
 
         categoryDAO = CategoryDAO(this)
         taskDAO = TaskDAO(this)
@@ -303,122 +304,19 @@ class TaskActivity : AppCompatActivity() {
                 taskDAO.insert(task)
             }
 
-            scheduleNotification()
+            NotificationManager(this).scheduleNotification(task)
 
             finish()
         }
     }
 
     private fun checkPermissions() {
-        checkNotificationsPermission()
-        checkUseExactAlarmPermission()
-    }
-
-    private fun checkNotificationsPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13 API 33
-            val permissionState = ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
-            if (permissionState == PackageManager.PERMISSION_DENIED) {
-                val permissions = arrayOf(Manifest.permission.POST_NOTIFICATIONS)
-                ActivityCompat.requestPermissions(this, permissions, REQUEST_PERMISSION_POST_NOTIFICATIONS)
-            }
-        }
-    }
-
-    private fun checkUseExactAlarmPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13 API 33
-            val permissionState = ContextCompat.checkSelfPermission(this, Manifest.permission.USE_EXACT_ALARM)
-            if (permissionState == PackageManager.PERMISSION_DENIED) {
-                val permissions = arrayOf(Manifest.permission.USE_EXACT_ALARM)
-                ActivityCompat.requestPermissions(this, permissions, REQUEST_PERMISSION_USE_EXACT_ALARM)
-            }
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) { // Android 12 API 31
-            val permissionState = ContextCompat.checkSelfPermission(this, Manifest.permission.SCHEDULE_EXACT_ALARM)
-            if (permissionState == PackageManager.PERMISSION_DENIED) {
-                val permissions = arrayOf(Manifest.permission.SCHEDULE_EXACT_ALARM)
-                ActivityCompat.requestPermissions(this, permissions, REQUEST_PERMISSION_SCHEDULE_EXACT_ALARM)
-            }
-        }
+        permissionManager.checkNotificationsPermission()
+        permissionManager.checkUseExactAlarmPermission()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            REQUEST_PERMISSION_POST_NOTIFICATIONS -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // El permiso fue concedido, puedes proceder a mostrar las notificaciones
-                } else {
-                    // El permiso fue denegado, puedes mostrar un mensaje o redirigir a la configuración
-                    goToSettings(REQUEST_PERMISSION_POST_NOTIFICATIONS)
-                }
-            }
-            REQUEST_PERMISSION_USE_EXACT_ALARM -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // Permiso para alarmas exactas concedido, procede con AlarmManager
-                } else {
-                    // El permiso fue denegado, muestra un mensaje o configura una alternativa
-                    goToSettings(REQUEST_PERMISSION_USE_EXACT_ALARM)
-                }
-            }
-            REQUEST_PERMISSION_SCHEDULE_EXACT_ALARM -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // Permiso para alarmas exactas concedido, procede con AlarmManager
-                } else {
-                    // El permiso fue denegado, muestra un mensaje o configura una alternativa
-                    goToSettings(REQUEST_PERMISSION_SCHEDULE_EXACT_ALARM)
-                }
-            }
-            // Otros permisos
-        }
-    }
-
-    private fun goToSettings(permissionCode: Int) {
-        MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.alert_dialog_permissions_title)
-            .setMessage(R.string.alert_dialog_permissions_message)
-            .setPositiveButton(R.string.action_settings) { dialog, _ ->
-                when (permissionCode) {
-                    REQUEST_PERMISSION_POST_NOTIFICATIONS -> {
-                        val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
-                        intent.putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
-                        startActivity(intent)
-                    }
-                    else -> {
-                        val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
-                        intent.setData(Uri.parse("package:$packageName"))
-                        startActivity(intent)
-                    }
-                }
-            }
-            .setNegativeButton(android.R.string.cancel) { dialog, _ ->
-                dialog.dismiss()
-            }
-            .setIcon(R.drawable.ic_settings)
-            .show()
-    }
-
-    private fun scheduleNotification() {
-        val intent = Intent(applicationContext, ReminderBroadcastReceiver::class.java)
-        intent.putExtra(ReminderBroadcastReceiver.TASK_ID, task.id)
-
-        val pendingIntentFlags = if (task.reminder) {
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-        } else {
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_NO_CREATE
-        }
-
-        val pendingIntent = PendingIntent.getBroadcast(
-            applicationContext,
-            task.id.toInt(),
-            intent,
-            pendingIntentFlags
-        )
-
-        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
-        if (task.reminder) {
-            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, task.getCalendar().timeInMillis, pendingIntent)
-            //alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, Calendar.getInstance().timeInMillis + 10000, pendingIntent)
-        } else if (pendingIntent != null) {
-            alarmManager.cancel(pendingIntent)
-        }
+        permissionManager.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 }
